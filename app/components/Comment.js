@@ -13,6 +13,11 @@ module.exports = Comment = React.createClass({
                     },
                     this.props.author
                 ),
+                React.DOM.p({
+                        className: 'commentText'
+                    },
+                    this.props.text
+                ),
                 this.props.children
             )
         );

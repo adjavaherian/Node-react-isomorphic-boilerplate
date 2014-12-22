@@ -2,57 +2,67 @@ var config = require('../config');
 var React = require('react');
 var $ = require('jquery');
 
-// var Components = require('require-all')(config.root + '/app/components'); -- not supported in browser
-var Comment = require('./components/Comment');
+// var CommentBox = React.createFactory(require('./components/CommentBox'));
 var CommentBox = require('./components/CommentBox');
-var CommentForm = require('./components/CommentForm');
-var CommentList = require('./components/CommentList');
-var IsoBegins = require('./components/IsoBegins');
+
+var IsoBegins = React.createFactory(require('./components/IsoBegins'));
 
 if (typeof window !== 'undefined') {
-	// trigger render to bind UI to application on front end
+    // trigger render to bind UI to application on front end
     window.onload = function() {
-        React.render(App(), document);
-    }
-}
-
-var Components = {
-    Comment: Comment,
-    CommentBox: CommentBox,
-    CommentForm: CommentForm,
-    CommentList: CommentList,
-    IsoBegins: IsoBegins
+        console.log('CLIENT-ONLY CODE; re-render on load to initialize UI elements and all')
+        var initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
+        // pass initial state into app on client side render
+        React.render(React.createElement(App, {
+            initialState: initialState
+        }), document);
+    };
 }
 
 var App = React.createClass({
-    displayName: "App",
+    displayName: 'App',
     render: function() {
+        if (typeof window !== 'undefined') {
+            console.log('CLIENT')
+        } else {
+            console.log('SERVERSIDE')
+        }
         return (
-            React.createElement("html", null,
-                React.createElement("head", {
-                        lang: "en"
+            React.createElement('html', null,
+                React.createElement('head', {
+                        lang: 'en'
                     },
-                    React.createElement("meta", {
-                        charSet: "UTF-8"
+                    React.createElement('meta', {
+                        charSet: 'UTF-8'
                     }),
-                    React.createElement("title", null, "React App"),
-                    React.createElement("link", {
-                        rel: "stylesheet",
-                        href: "/stylesheets/style.css"
+                    React.createElement('title', null, 'React App'),
+                    React.createElement('link', {
+                        rel: 'stylesheet',
+                        href: '/stylesheets/style.css'
                     })
                 ),
-                React.createElement("body", null,
-                    React.createElement("div", {
-                            id: "main"
+                React.createElement('body', null,
+                    React.createElement('div', {
+                            id: 'main'
                         },
+                        React.createElement('div', {
+                                id: 'content'
+                            },
+                            'Information and stuff'),
                         React.createElement(CommentBox, {
+                            initialState: this.props.initialState,
                             url: 'comments.json',
                             pollInterval: 2000
                         })
-                    ),
-                    React.createElement("script", {
-                        type: "text/javascript",
-                        src: "/public/dist/bundle.js"
+                        // ),
+                        // React.createElement('script', {
+                        //         type: 'text/json',
+                        //         id: 'initial-state'
+                        //     },
+                        //     this.props.initialState
+                    ), React.createElement('script', {
+                        type: 'text/javascript',
+                        src: '/public/dist/bundle.js'
                     })
                 )
             )

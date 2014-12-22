@@ -4,8 +4,16 @@ var app = express();
 var config = require('./config');
 var serveStatic = require('serve-static');
 var React = require('react');
+var fs = require('fs');
+var request = require('request');
 
 app.use(express.static(path.join(__dirname, '/')));
+var bodyParser = require('body-parser')
+app.use(bodyParser.json()); // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
+    extended: true
+}));
+
 var App = require('./app/App.js');
 
 
@@ -24,13 +32,33 @@ app.route('/simple').get(function(req, res, next) {
     // res.send(markup);
 });
 
-// now we need to add browserify so the component and bindings are availble on the front end!
-app.route('/').get(function(req, res, next) {
-    var AppElement = React.createElement(App);
-    var markup = React.renderToString(AppElement);
-    res.send(markup);
+
+app.route('/comment').post(function(req, res, next) {
+    res.send('successfully recevied:' + JSON.stringify(req.body))
+        // fs.appendFile("./comments.json", JSON.stringify(req.body), function(err) {
+        //     if (err) {
+        //         console.log(err);
+        //     } else {
+        //         console.log("The file was saved!");
+        //     }
+        // });
+
 });
 
+// now we need to add browserify so the component and bindings are availble on the front end!
+app.route('/').get(function(req, res, next) {
+    // var initialState = require('./comments.json'); // must fetch initial state and inject into App -- this is static on server start....
+    request('http://localhost:3000/comments.json', function(error, response, body) {
+        var initialState = JSON.parse(body);
+        var AppElement = React.createElement(App, {
+            initialState: initialState
+        });
+        var markup = React.renderToString(AppElement);
+        markup += '<script id="initial-state" type="application/json">' + JSON.stringify(initialState) + '</script>';
+        res.send(markup);
+    });
+
+});
 
 
 

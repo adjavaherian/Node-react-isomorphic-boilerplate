@@ -1,51 +1,66 @@
 var React = require('react');
-var $ = require('jquery');
+var request = require('request');
+var CommentForm = require('./CommentForm');
+var CommentList = require('./CommentList');
+
+// var browser;
+// if (typeof window !== 'undefined') {
+//     browser = true;
+// }
+
+// var data = [];
+// if (!browser) {
+//     data = require('../../comments.json');
+// }
+
 
 module.exports = CommentBox = React.createClass({
     displayName: 'CommentBox',
     loadCommentsFromServer: function() {
-        $.ajax({
-            url: this.props.url, //props got passed in when we create an element from this class
-            dataType: 'json',
-            success: function(data) {
-                this.setState({ // calling this.setState() will cause react to re-render the component
-                    data: data
+        var self = this;
+        request('http://localhost:3000/' + this.props.url, function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                self.setState({ // calling this.setState() will cause react to re-render the component
+                    data: JSON.parse(body)
                 });
-            }.bind(this), // must bind this to get the current element! otherwise it would be the request/response? whatever ajax defaults this to.
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+            }
+        })
     },
     handleCommentSubmit: function(comment) {
-        console.log('THIS COMMENT HAS BEEN SUBMITTED: ' + comment);
         var comments = this.state.data;
         var newComments = comments.concat([comment]);
         this.setState({
             data: newComments
         });
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            type: 'POST',
-            data: comment,
-            success: function(data) {
-                this.setState({
-                    data: data
-                });
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+        // request.post('/comment', {form:{key:'value'}})
+        // $.ajax({
+        //     url: '/comment',
+        //     type: 'POST',
+        //     data: comment,
+        //     success: function(data) {
+        //         this.setState({
+        //             data: data
+        //         });
+        //     }.bind(this),
+        //     error: function(xhr, status, err) {
+        //         console.error('/comment', status, err.toString());
+        //     }.bind(this)
+        // });
     },
     getInitialState: function() { //called automatically once, executes once only
+        // THIS wont work.... 
+        // request('http://localhost:3000/comments.json', function(error, response, body) {
+        //         return {
+        //             data: body
+        //         };
+        //     })
+        // console.log(JSON.stringify(this.props));
         return {
-            data: [] //this.state.data is initialized to empty
+            data: this.props.initialState //this.state.data is initialized by the server if being called from the server??
         };
     },
     componentDidMount: function() { // called automatically when the component is mounted
-        this.loadCommentsFromServer();
+        this.loadCommentsFromServer(); // client side stuff; we do getInitialState on the server!
         setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
     render: function() {

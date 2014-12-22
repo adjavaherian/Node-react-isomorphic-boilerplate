@@ -1,7 +1,13 @@
 [{
-    "author": "Pete Huntzddzz",
-    "text": "This is one comme"
+    "id": "1",
+    "author": "Fede Torre",
+    "text": "This is the first comment on the list."
 }, {
-    "author": "Jordan Walke",
-    "text": "This is *another* comment"
+    "id": "2",
+    "author": "Jordan Walk",
+    "text": "Things come and go."
+}, {
+    "id": "3",
+    "author": "Fede Torre",
+    "text": "Hello world, isomorphic javascript app world. "
 }]
