@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+
+<head></head>
+
+<body>
+    <div id='content'></div>
+    <script src='http://fb.me/react-0.12.2.js'></script>
+    <script src='http://code.jquery.com/jquery-1.10.0.min.js'></script>
+    <script>
+    // THIS IS THE COMPONENT WRAPPER
+    // the React.render function will pass it some data ie our comments
+    // If we want any subcomponent to use that data, we must explicitly pass it.
+
+    // data in a class/element:
+    // props are immutable and passed into a class to create an element
+    // state is mutable
+    
+    // THIS IS THE RENDER/INIT COMMAND
+    React.render(
+        React.createElement(CommentBox, {
+            url: 'comments.json',
+            pollInterval: 2000
+        }),
+        document.getElementById('content')
+    );
+    </script>
+</body>
+
+</html>

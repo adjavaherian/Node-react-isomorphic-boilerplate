@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html>
+
+<head></head>
+
+<body>
+    <div id='content'></div>
+    <script src='http://fb.me/react-0.12.2.js'></script>
+    <script src='http://code.jquery.com/jquery-1.10.0.min.js'></script>
+    <script>
+    // THIS IS THE COMPONENT WRAPPER
+    // the React.render function will pass it some data ie our comments
+    // If we want any subcomponent to use that data, we must explicitly pass it.
+
+    // data in a class/element:
+    // props are immutable and passed into a class to create an element
+    // state is mutable
+    var CommentBox = React.createClass({
+        displayName: 'CommentBox',
+        loadCommentsFromServer: function() {
+            $.ajax({
+                url: this.props.url, //props got passed in when we create an element from this class
+                dataType: 'json',
+                success: function(data) {
+                    this.setState({ // calling this.setState() will cause react to re-render the component
+                        data: data
+                    });
+                }.bind(this), // must bind this to get the current element! otherwise it would be the request/response? whatever ajax defaults this to.
+                error: function(xhr, status, err) {
+                    console.error(this.props.url, status, err.toString());
+                }.bind(this)
+            });
+        },
+        handleCommentSubmit: function(comment) {
+            console.log('THIS COMMENT HAS BEEN SUBMITTED: ' + comment);
+            var comments = this.state.data;
+            var newComments = comments.concat([comment]);
+            this.setState({
+                data: newComments
+            });
+            $.ajax({
+                url: this.props.url,
+                dataType: 'json',
+                type: 'POST',
+                data: comment,
+                success: function(data) {
+                    this.setState({
+                        data: data
+                    });
+                }.bind(this),
+                error: function(xhr, status, err) {
+                    console.error(this.props.url, status, err.toString());
+                }.bind(this)
+            });
+        },
+        getInitialState: function() { //called automatically once, executes once only
+            return {
+                data: [] //this.state.data is initialized to empty
+            };
+        },
+        componentDidMount: function() { // called automatically when the component is mounted
+            this.loadCommentsFromServer();
+            setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+        },
+        render: function() {
+            return React.DOM.div({
+                    className: 'commentBox' // this is literally the html class name
+                },
+                React.DOM.h1(null, 'Here is the CommentList:'), // (attr, content) -- you can nest elements in there, but the idea is to create components for anything that requires nesting!!
+                React.createElement(CommentList, { // create a CommentList element and pass it the data
+                    data: this.state.data //pass the Box's state in to the List as a prop.
+                }),
+                React.DOM.h1(null, 'Here is the CommentForm:'),
+                React.createElement(CommentForm, {
+                    onCommentSubmit: this.handleCommentSubmit // pass the function this.handleCommentSubmit to the Form Component as props.onCommentSubmit
+                })
+            );
+        }
+    });
+
+    var CommentList = React.createClass({
+        displayName: 'CommentList',
+        render: function() {
+            var commentNodes = this.props.data.map(function(comment) {
+                return (
+                    React.createElement(Comment, {
+                            author: comment.author
+                        },
+                        comment.text
+                    )
+                );
+            });
+            return (
+                React.createElement('div', {
+                        className: 'commentList'
+                    },
+                    commentNodes
+                )
+            );
+        }
+    });
+
+    var Comment = React.createClass({
+        displayName: 'Comment',
+        render: function() {
+            return (
+                React.DOM.div({
+                        className: 'comment'
+                    },
+                    React.DOM.h2({
+                            className: 'commentAuthor'
+                        },
+                        this.props.author
+                    ),
+                    this.props.children
+                )
+            );
+        }
+    });
+
+    var CommentForm = React.createClass({
+        displayName: 'CommentForm',
+        handleSubmit: function(e) {
+            e.preventDefault();
+            var author = this.refs.author.getDOMNode().value.trim();
+            var text = this.refs.text.getDOMNode().value.trim();
+            if (!text || !author) {
+                return;
+            }
+            var comment = {
+                author: author,
+                text: text
+            }
+            this.props.onCommentSubmit(comment); // CALL a function that was passed from COMMENT BOX
+            this.refs.author.getDOMNode().value = '';
+            this.refs.text.getDOMNode().value = '';
+            return;
+        },
+        render: function() {
+            return React.createElement('form', {
+                    className: 'commentForm',
+                    onSubmit: this.handleSubmit // LINK AN EVENT TO A JS FUNCTION ABOVE
+                },
+                React.createElement('input', {
+                    type: 'text',
+                    placeholder: 'Your name',
+                    ref: 'author'
+                }),
+                React.createElement('input', {
+                    type: 'text',
+                    placeholder: 'Say something...',
+                    ref: 'text'
+                }),
+                React.createElement('input', {
+                    type: 'submit',
+                    value: 'Post'
+                })
+            );
+        }
+    });
+
+    // THIS IS THE RENDER/INIT COMMAND
+    React.render(
+        React.createElement(CommentBox, {
+            url: 'comments.json',
+            pollInterval: 2000
+        }),
+        document.getElementById('content')
+    );
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+
+<head></head>
+
+<body>
+    <div id='content'></div>
+    <script src='http://fb.me/react-0.12.2.js'></script>
+    <script src='http://code.jquery.com/jquery-1.10.0.min.js'></script>
+    <script>
+    var App = React.createClass({
+        displayName: "App",
+        render: function() {
+            return (
+                React.createElement("html", null,
+                    React.createElement("head", {
+                            lang: "en"
+                        },
+                        React.createElement("meta", {
+                            charSet: "UTF-8"
+                        }),
+                        React.createElement("title", null, "React App"),
+                        React.createElement("link", {
+                            rel: "stylesheet",
+                            href: "/stylesheets/style.css"
+                        })
+                    ),
+                    React.createElement("body", null,
+                        React.createElement("div", {
+                                id: "main"
+                            },
+                            React.createElement("h1", null, 'Hi world')
+                        ),
+                        React.createElement("script", {
+                            type: "text/javascript",
+                            src: "/public/dist/bundle.js"
+                        })
+                    )
+                )
+            )
+        }
+    });
+
+    // THIS IS THE RENDER/INIT COMMAND
+    React.render(
+        React.createElement(App),
+        document.getElementById('content')
+    );
+    </script>
+</body>
+
+</html>
