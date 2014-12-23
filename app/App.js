@@ -24,12 +24,12 @@ if (typeof window !== 'undefined') {
     window.onload = function() {
         console.log('CLIENT-ONLY CODE; re-render on load to initialize UI elements and all')
         var path = url.parse(document.URL).pathname;
-        console.log('CLIENT path: ' + path)
+        console.log('CLIENT path: ' + path) // ONLY COMPONENTS ON THIS PAGE SHOULD RECEIVE INITIAL STATE DATA
         var initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
         // pass initial state into app on client side render
         React.render(React.createElement(App, {
             path: path,
-            initialState: initialState
+            initialState: initialState // ONLY COMPONENTS ON THIS PATH SHOULD RECEIVE INITIAL STATE DATA
         }), document);
     };
 }
@@ -38,9 +38,9 @@ var App = React.createClass({
     displayName: 'App',
     render: function() {
         if (typeof window !== 'undefined') {
-            console.log('CLIENT')
+            // console.log('App: client')
         } else {
-            console.log('SERVERSIDE')
+            // console.log('App: serverside')
         }
         return (
             React.createElement('html', null,
@@ -57,6 +57,9 @@ var App = React.createClass({
                     })
                 ),
                 React.createElement('body', null,
+                    React.createElement('p', {
+                        className: 'envType'
+                    }, 'This is an example of an isomorphic web app. Navigating to any page url directly (or hitting refresh) will serve it up with server-side rendering. After the initial load, all subsequent page loads are client rendered. The coolest part about it is that you resuse the same components/code on the server and client! Super efficient and scalable for a big team. #yay'),
                     React.createElement(HeaderNav, {
                         path: this.props.path
                     }),
@@ -67,7 +70,7 @@ var App = React.createClass({
                         },
                         React.createElement(Location, {
                             path: "/",
-                            initialState: this.props.initialState,
+                            initialState: this.props.initialState, // needs something like if path == serverside loaded path, pass in initialState
                             handler: FrontPage
                         }),
                         React.createElement(Location, {

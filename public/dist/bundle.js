@@ -25,12 +25,12 @@ if (typeof window !== 'undefined') {
     window.onload = function() {
         console.log('CLIENT-ONLY CODE; re-render on load to initialize UI elements and all')
         var path = url.parse(document.URL).pathname;
-        console.log('CLIENT path: ' + path)
+        console.log('CLIENT path: ' + path) // ONLY COMPONENTS ON THIS PAGE SHOULD RECEIVE INITIAL STATE DATA
         var initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
         // pass initial state into app on client side render
         React.render(React.createElement(App, {
             path: path,
-            initialState: initialState
+            initialState: initialState // ONLY COMPONENTS ON THIS PATH SHOULD RECEIVE INITIAL STATE DATA
         }), document);
     };
 }
@@ -39,9 +39,9 @@ var App = React.createClass({
     displayName: 'App',
     render: function() {
         if (typeof window !== 'undefined') {
-            console.log('CLIENT')
+            // console.log('App: client')
         } else {
-            console.log('SERVERSIDE')
+            // console.log('App: serverside')
         }
         return (
             React.createElement('html', null,
@@ -58,6 +58,9 @@ var App = React.createClass({
                     })
                 ),
                 React.createElement('body', null,
+                    React.createElement('p', {
+                        className: 'envType'
+                    }, 'This is an example of an isomorphic web app. Navigating to any page url directly (or hitting refresh) will serve it up with server-side rendering. After the initial load, all subsequent page loads are client rendered. The coolest part about it is that you resuse the same components/code on the server and client! Super efficient and scalable for a big team. #yay'),
                     React.createElement(HeaderNav, {
                         path: this.props.path
                     }),
@@ -68,7 +71,7 @@ var App = React.createClass({
                         },
                         React.createElement(Location, {
                             path: "/",
-                            initialState: this.props.initialState,
+                            initialState: this.props.initialState, // needs something like if path == serverside loaded path, pass in initialState
                             handler: FrontPage
                         }),
                         React.createElement(Location, {
@@ -338,12 +341,17 @@ module.exports = CommentsPage = React.createClass({
                 React.DOM.h2({
                         className: 'class-name-h2'
                     },
-                    'Commentspage page!!'
+                    'Welcome to the Comment\'s Page.'
+                ),
+                React.DOM.p({
+                        className: 'class-p'
+                    },
+                    '`CommentsPage` (like all pages) is a component made up of other Components like `CommentList`, `CommentForm`. `CommentList` is made up of `Comments`. '
                 ),
                 React.DOM.p({
                         className: 'class-name-p'
                     },
-                    'CommentsPage paragraph thingy'
+                    'The `CommentList` is set to fetch (in 10s interval) an array of comment json objects from a static comments.json file on the server. It will fetch and render every 10 seconds. When you post a new comment it is displayed on the page - but it is not processed on the server (im too lazy). Hence every 10 seconds or so the CommentList will be regenerated from comments.json'
                 ),
                 React.createElement(CommentBox, {
                     initialState: this.props.initialState,
@@ -369,12 +377,12 @@ module.exports = FrontPage = React.createClass({
                 React.DOM.h2({
                         className: 'class-name-h2'
                     },
-                    'FrontPage page!! Welcome to Hotpads.'
+                    'Welcome to Hotpads. The place to find your place.'
                 ),
                 React.DOM.p({
                         className: 'class-name-p'
                     },
-                    'FrontPage paragraph thingy'
+                    'This is the frontpage (aka home page) of the app. Try clicking the links above to experience the site!'
                 ),
                 this.props.children
             )
@@ -392,7 +400,10 @@ module.exports = IsoBegins = React.createClass({
             React.createElement('h1', {
                     className: 'isoBegins'
                 },
-                'HELLO WORLD. NOW WE ARE GETTING THERE'
+                'You are now on page 1.',
+                React.createElement('p', {
+                    className: 'testing'
+                }, 'Page 1 is a static page showing this plain text.')
             )
         );
     }
@@ -405,10 +416,10 @@ module.exports = IsoBegins2 = React.createClass({
     displayName: 'IsoBegins2',
     render: function() {
         return (
-            React.createElement('h1', {
+            React.createElement('h4', {
                     className: 'isoBegins2'
                 },
-                'PAGE2222'
+                'Welcome now to Page 2. Not to be confused with other pages, there is one longgggg line of text here.'
             )
         );
     }
@@ -433,9 +444,9 @@ module.exports = MapSearchPage = React.createClass({
                 React.DOM.p({
                         className: 'class-name-p'
                     },
-                    'MapSearchPage paragraph thingy'
-                ),
-                this.props.children
+                    'When you want to search for an apartment on Hotpads, we have this awesome map-based search application. So you go to a page and there is a big map. When you click on an apartment, you dont lose your map view! Instead, we pop out some information on the right side of the screen. You can see the apartments location and details at the same time!!! #likeaboss'
+                )
+                // this.props
             )
         );
     }

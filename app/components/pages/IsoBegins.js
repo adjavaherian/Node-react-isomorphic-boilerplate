@@ -7,7 +7,10 @@ module.exports = IsoBegins = React.createClass({
             React.createElement('h1', {
                     className: 'isoBegins'
                 },
-                'HELLO WORLD. NOW WE ARE GETTING THERE'
+                'You are now on page 1.',
+                React.createElement('p', {
+                    className: 'testing'
+                }, 'Page 1 is a static page showing this plain text.')
             )
         );
     }

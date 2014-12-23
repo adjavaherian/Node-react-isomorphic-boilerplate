@@ -11,12 +11,12 @@ module.exports = FrontPage = React.createClass({
                 React.DOM.h2({
                         className: 'class-name-h2'
                     },
-                    'FrontPage page!! Welcome to Hotpads.'
+                    'Welcome to Hotpads. The place to find your place.'
                 ),
                 React.DOM.p({
                         className: 'class-name-p'
                     },
-                    'FrontPage paragraph thingy'
+                    'This is the frontpage (aka home page) of the app. Try clicking the links above to experience the site!'
                 ),
                 this.props.children
             )

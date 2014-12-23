@@ -45,10 +45,76 @@ app.route('/comment').post(function(req, res, next) {
 
 });
 
-// now we need to add browserify so the component and bindings are availble on the front end!
-// all requests will be routed through react app; both server and client side stuffs
+// server side rendering complete.
+var FrontPage = require('./app/components/pages/FrontPage.js');
+var MapSearchPage = require('./app/components/pages/MapSearchPage');
+var IsoBegins = require('./app/components/pages/IsoBegins');
+var IsoBegins2 = require('./app/components/pages/IsoBegins2');
+var NotFoundPage = require('./app/components/pages/NotFound');
+var CommentsPage = require('./app/components/pages/CommentsPage');
+
+app.route('/server/:path').get(function(req, res, next) {
+    var path = req.params.path;
+    console.log('SERVER SIDE RENDERING');
+    var markup = 'This is an example of Server-side rendering ONLY. Every time you navigate a page the browser will make a full HTTP request (same as typing in the new url directly or hitting refresh).';
+    markup += '<div><a href="/server/frontpage">Frontpage!</a><a href="/server/1">Go to page 1</a><a href="/server/2">Go to page 2</a><a href="/server/mapsearchpage">Map search now!</a><a href="/server/comments-page">Go to page comments-page</a><a href="/server/404">Go to page not found</a></div>';
+    if (path == 'frontpage') {
+        var reactElement = React.createElement(FrontPage, {});
+    } else if (path == '1') {
+        var reactElement = React.createElement(IsoBegins, {});
+    } else if (path == '2') {
+        var reactElement = React.createElement(IsoBegins2, {});
+    } else if (path == 'mapsearchpage') {
+        var reactElement = React.createElement(MapSearchPage, {});
+    } else if (path == 'comments-page') {
+        var initialState = [{
+            "id": "1",
+            "author": "Fede Torre",
+            "text": "This is the first comment on the l!!!ist."
+        }, {
+            "id": "2",
+            "author": "Jordan Walk",
+            "text": "Things come and go."
+        }, {
+            "id": "3",
+            "author": "Fede Torre",
+            "text": "Hello world, isomorphic javascript app world. "
+        }];
+        var reactElement = React.createElement(CommentsPage, {
+            path: path,
+            initialState: initialState
+        });
+    } else {
+        var reactElement = React.createElement(NotFoundPage, {});
+    }
+    markup += React.renderToString(reactElement);
+    res.send(markup);
+
+});
+
+
+// TO VISUALIZE CLIENT SIDE RENDERING, UNCOMMENT THIS LINE AND REFRESH COMMENTS PAGE
+// Could be made more smooth by adding placeholders/loading spinners
+// Our Isomorphic app will experience this on page changes, but This is easier/better (when made smooth) than a full new http request
+// app.route('/comments-page').get(function(req, res, next) {
+//     var path = url.parse(req.url).pathname;
+//     console.log('CLIENT-SIDE RENDERING path: ' + path); // load client then click on comments
+//     var AppElement = React.createElement(App, {
+//         path: 'comments-page',
+//         initialState: [] // initialState is not passed (initial comments will be fetched from front-end)
+//     });
+
+//     var markup = React.renderToString(AppElement);
+//     markup += '<script id="initial-state" type="application/json">[]</script>';
+//     res.send(markup);
+// });
+
+
 app.route('/*').get(function(req, res, next) {
-    // may need to have path dependant initial states or something..... whatever we would want indexed should use an initialState
+    // all requests will be routed through react app; both server and client side stuffs
+    // this allows us to define routes in only 1 place, while being able to serverside and clientside render
+
+    // May need to have path dependant initial states or something..... whatever we would want indexed should use an initialState
     // We will need to implement isomorphic flux to get initialStates always in sync
     // Flux is a pre-render architecture thing
     // We have a lot of nested components. Say 5 different components use `Comments`
@@ -70,9 +136,16 @@ app.route('/*').get(function(req, res, next) {
     // Any changed stores will update their corresponding components
     // -- This way you always have unidirectional flow and consistent information displayed
 
+    // Every page rendered independently must server-side fetch the intialState for that 1st server render
+    // ie bots will be able to crawl fine
+    // But there is no need to load ALL the app data (every component's initalState) on first load.
+    // --> SEO will work calling any page independently (it is rendered on the server with its initialState)
+    // --> All subsequent fetches will be rendered client side (how is performance on this. fine, right? thats the whole advantage of clientside apps....; you still have to load the data but its not a new full http request)
+    // In the react app, initialState should only be passed/used by the initally loaded component.
+
     request('http://localhost:3000/comments.json', function(error, response, body) {
         var path = url.parse(req.url).pathname;
-        console.log('SERVER path: ' + path);
+        console.log('ISO SERVER path: ' + path);
         var initialState = JSON.parse(body);
         var AppElement = React.createElement(App, {
             path: path,
@@ -87,20 +160,6 @@ app.route('/*').get(function(req, res, next) {
 
 
 
-// server side rendering complete.
-app.route('/server').get(function(req, res, next) {
-    // var reactElement = React.createElement(App.CommentBox, {
-    //     url: 'comments.json',
-    //     pollInterval: 2000
-    // });
-    // var markup = React.renderToString(reactElement);
-    // res.send(markup);
-});
-
-
-app.route('/client').get(function(req, res, next) {
-    res.sendFile(path.join(__dirname, '.', 'tutorial.html'));
-});
 
 
 
