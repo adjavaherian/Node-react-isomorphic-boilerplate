@@ -145,7 +145,7 @@ app.route('/*').get(function(req, res, next) {
     // --> All subsequent fetches will be rendered client side (how is performance on this. fine, right? thats the whole advantage of clientside apps....; you still have to load the data but its not a new full http request)
     // In the react app, initialState should only be passed/used by the initally loaded component.
 
-    request('http://localhost:3000/comments.json', function(error, response, body) {
+    request('https://hotpads-iso-react.herokuapp.com/comments.json', function(error, response, body) {
         var path = url.parse(req.url).pathname;
         console.log('ISO SERVER path: ' + path);
         var initialState = JSON.parse(body);
