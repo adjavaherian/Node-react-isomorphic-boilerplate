@@ -1,22 +1,22 @@
 var React = require('react');
 
 
-module.exports = MainPage = React.createClass({
-    displayName: 'MainPage',
+module.exports = FrontPage = React.createClass({
+    displayName: 'FrontPage',
     render: function() {
         return (
             React.DOM.div({
-                    className: 'MainPage'
+                    className: 'FrontPage'
                 },
                 React.DOM.h2({
                         className: 'class-name-h2'
                     },
-                    'Main page!!'
+                    'FrontPage page!! Welcome to Hotpads.'
                 ),
                 React.DOM.p({
                         className: 'class-name-p'
                     },
-                    'MainPage paragraph thingy'
+                    'FrontPage paragraph thingy'
                 ),
                 this.props.children
             )

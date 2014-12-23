@@ -1,23 +1,23 @@
 var config = require('../config');
 var React = require('react');
-var Router = require('react-router-component');
 var $ = require('jquery');
 var url = require('url');
 
-// var CommentBox = React.createFactory(require('./components/CommentBox'));
-var CommentBox = require('./components/CommentBox');
-
-
-var IsoBegins = require('./components/IsoBegins');
-var IsoBegins2 = require('./components/IsoBegins2');
-var NotFoundPage = require('./components/NotFound');
-
+var Router = require('react-router-component');
 var Link = Router.Link;
 var Locations = Router.Locations;
 var Location = Router.Location;
 var NotFound = Router.NotFound;
 
-var MainPage = require('./components/pages/MainPage');
+var HeaderNav = require('./components/modules/HeaderNav'); // this would normally be loaded in by the page
+// Load all pages
+var FrontPage = require('./components/pages/FrontPage');
+var MapSearchPage = require('./components/pages/MapSearchPage');
+var IsoBegins = require('./components/pages/IsoBegins');
+var IsoBegins2 = require('./components/pages/IsoBegins2');
+var NotFoundPage = require('./components/pages/NotFound');
+var CommentsPage = require('./components/pages/CommentsPage');
+
 
 if (typeof window !== 'undefined') {
     // trigger render to bind UI to application on front end
@@ -33,9 +33,6 @@ if (typeof window !== 'undefined') {
         }), document);
     };
 }
-
-
-
 
 var App = React.createClass({
     displayName: 'App',
@@ -57,10 +54,32 @@ var App = React.createClass({
                     React.createElement('link', {
                         rel: 'stylesheet',
                         href: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'
+                    })
+                ),
+                React.createElement('body', null,
+                    React.createElement(HeaderNav, {
+                        path: this.props.path
                     }),
+                    // Locations component handles like a switch case, 
+                    // if the current path matches the path of a child, it renders that element. simple. 
                     React.createElement(Locations, {
-                            path: this.props.path
+                            path: this.props.path,
                         },
+                        React.createElement(Location, {
+                            path: "/",
+                            initialState: this.props.initialState,
+                            handler: FrontPage
+                        }),
+                        React.createElement(Location, {
+                            path: "/mapsearchpage",
+                            initialState: this.props.initialState,
+                            handler: MapSearchPage
+                        }),
+                        React.createElement(Location, {
+                            path: "/comments-page",
+                            initialState: this.props.initialState,
+                            handler: CommentsPage
+                        }),
                         React.createElement(Location, {
                             path: "/1",
                             handler: IsoBegins
@@ -73,39 +92,8 @@ var App = React.createClass({
                             handler: NotFoundPage
 
                         })
-                    )
-                ),
-                React.createElement('body', null,
-                    React.createElement('div', {
-                            className: 'container',
-                            id: 'main'
-                        },
-                        React.createElement('div', {
-                                id: 'content'
-                            },
-                            'Information and stuff',
-                            React.createElement(Link, {
-                                href: "/1"
-                            }, 'Go to page 1'),
-                            React.createElement(Link, {
-                                href: "/2"
-                            }, 'Go to page 2'),
-                            React.createElement(Link, {
-                                href: "/404"
-                            }, 'Go to page not found')
-                        ),
-                        React.createElement(CommentBox, {
-                            initialState: this.props.initialState,
-                            url: 'comments.json',
-                            pollInterval: 2000
-                        })
-                        // ),
-                        // React.createElement('script', {
-                        //         type: 'text/json',
-                        //         id: 'initial-state'
-                        //     },
-                        //     this.props.initialState
-                    ), React.createElement('script', {
+                    ),
+                    React.createElement('script', {
                         type: 'text/javascript',
                         src: '/public/dist/bundle.js'
                     })

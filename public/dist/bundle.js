@@ -1,24 +1,24 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./app/App.js":[function(require,module,exports){
 var config = require('../config');
 var React = require('react');
-var Router = require('react-router-component');
 var $ = require('jquery');
 var url = require('url');
 
-// var CommentBox = React.createFactory(require('./components/CommentBox'));
-var CommentBox = require('./components/CommentBox');
-
-
-var IsoBegins = require('./components/IsoBegins');
-var IsoBegins2 = require('./components/IsoBegins2');
-var NotFoundPage = require('./components/NotFound');
-
+var Router = require('react-router-component');
 var Link = Router.Link;
 var Locations = Router.Locations;
 var Location = Router.Location;
 var NotFound = Router.NotFound;
 
-var MainPage = require('./components/pages/MainPage');
+var HeaderNav = require('./components/modules/HeaderNav'); // this would normally be loaded in by the page
+// Load all pages
+var FrontPage = require('./components/pages/FrontPage');
+var MapSearchPage = require('./components/pages/MapSearchPage');
+var IsoBegins = require('./components/pages/IsoBegins');
+var IsoBegins2 = require('./components/pages/IsoBegins2');
+var NotFoundPage = require('./components/pages/NotFound');
+var CommentsPage = require('./components/pages/CommentsPage');
+
 
 if (typeof window !== 'undefined') {
     // trigger render to bind UI to application on front end
@@ -34,9 +34,6 @@ if (typeof window !== 'undefined') {
         }), document);
     };
 }
-
-
-
 
 var App = React.createClass({
     displayName: 'App',
@@ -58,10 +55,32 @@ var App = React.createClass({
                     React.createElement('link', {
                         rel: 'stylesheet',
                         href: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'
+                    })
+                ),
+                React.createElement('body', null,
+                    React.createElement(HeaderNav, {
+                        path: this.props.path
                     }),
+                    // Locations component handles like a switch case, 
+                    // if the current path matches the path of a child, it renders that element. simple. 
                     React.createElement(Locations, {
-                            path: this.props.path
+                            path: this.props.path,
                         },
+                        React.createElement(Location, {
+                            path: "/",
+                            initialState: this.props.initialState,
+                            handler: FrontPage
+                        }),
+                        React.createElement(Location, {
+                            path: "/mapsearchpage",
+                            initialState: this.props.initialState,
+                            handler: MapSearchPage
+                        }),
+                        React.createElement(Location, {
+                            path: "/comments-page",
+                            initialState: this.props.initialState,
+                            handler: CommentsPage
+                        }),
                         React.createElement(Location, {
                             path: "/1",
                             handler: IsoBegins
@@ -74,39 +93,8 @@ var App = React.createClass({
                             handler: NotFoundPage
 
                         })
-                    )
-                ),
-                React.createElement('body', null,
-                    React.createElement('div', {
-                            className: 'container',
-                            id: 'main'
-                        },
-                        React.createElement('div', {
-                                id: 'content'
-                            },
-                            'Information and stuff',
-                            React.createElement(Link, {
-                                href: "/1"
-                            }, 'Go to page 1'),
-                            React.createElement(Link, {
-                                href: "/2"
-                            }, 'Go to page 2'),
-                            React.createElement(Link, {
-                                href: "/404"
-                            }, 'Go to page not found')
-                        ),
-                        React.createElement(CommentBox, {
-                            initialState: this.props.initialState,
-                            url: 'comments.json',
-                            pollInterval: 2000
-                        })
-                        // ),
-                        // React.createElement('script', {
-                        //         type: 'text/json',
-                        //         id: 'initial-state'
-                        //     },
-                        //     this.props.initialState
-                    ), React.createElement('script', {
+                    ),
+                    React.createElement('script', {
                         type: 'text/javascript',
                         src: '/public/dist/bundle.js'
                     })
@@ -118,7 +106,7 @@ var App = React.createClass({
 
 module.exports = App;
 
-},{"../config":"/Users/federicot/Dropbox/Projects/react-isomorph/config.js","./components/CommentBox":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/CommentBox.js","./components/IsoBegins":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/IsoBegins.js","./components/IsoBegins2":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/IsoBegins2.js","./components/NotFound":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/NotFound.js","./components/pages/MainPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/MainPage.js","jquery":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js","url":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/url/url.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/Comment.js":[function(require,module,exports){
+},{"../config":"/Users/federicot/Dropbox/Projects/react-isomorph/config.js","./components/modules/HeaderNav":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/HeaderNav.js","./components/pages/CommentsPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/CommentsPage.js","./components/pages/FrontPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/FrontPage.js","./components/pages/IsoBegins":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/IsoBegins.js","./components/pages/IsoBegins2":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/IsoBegins2.js","./components/pages/MapSearchPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/MapSearchPage.js","./components/pages/NotFound":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/NotFound.js","jquery":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js","url":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/url/url.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/Comment.js":[function(require,module,exports){
 var React = require('react');
 
 
@@ -145,7 +133,7 @@ module.exports = Comment = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/CommentBox.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentBox.js":[function(require,module,exports){
 var React = require('react');
 var request = require('request');
 var CommentForm = require('./CommentForm');
@@ -227,7 +215,7 @@ module.exports = CommentBox = React.createClass({
     }
 });
 
-},{"./CommentForm":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/CommentForm.js","./CommentList":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/CommentList.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","request":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browser-request/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/CommentForm.js":[function(require,module,exports){
+},{"./CommentForm":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentForm.js","./CommentList":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentList.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","request":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browser-request/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentForm.js":[function(require,module,exports){
 var React = require('react');
 
 module.exports = CommentForm = React.createClass({
@@ -271,7 +259,7 @@ module.exports = CommentForm = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/CommentList.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentList.js":[function(require,module,exports){
 var React = require('react');
 var Comment = require('./Comment');
 
@@ -298,7 +286,103 @@ module.exports = CommentList = React.createClass({
     }
 });
 
-},{"./Comment":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/Comment.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/IsoBegins.js":[function(require,module,exports){
+},{"./Comment":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/Comment.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/HeaderNav.js":[function(require,module,exports){
+var React = require('react');
+var Router = require('react-router-component');
+var Link = Router.Link;
+
+
+module.exports = HeaderNav = React.createClass({
+    displayName: 'HeaderNav',
+    render: function() {
+        return (
+            React.DOM.div({
+                    className: 'HeaderNav'
+                },
+                React.createElement(Link, {
+                    href: "/"
+                }, 'Frontpage!'),
+                React.createElement(Link, {
+                    href: "/1"
+                }, 'Go to page 1'),
+                React.createElement(Link, {
+                    href: "/2"
+                }, 'Go to page 2'),
+                React.createElement(Link, {
+                    href: "/mapsearchpage"
+                }, 'Map search now!'),
+                React.createElement(Link, {
+                    href: "/comments-page"
+                }, 'Go to page comments-page'),
+                React.createElement(Link, {
+                    href: "/404"
+                }, 'Go to page not found')
+            )
+        );
+    }
+});
+
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/CommentsPage.js":[function(require,module,exports){
+var React = require('react');
+
+var CommentBox = require('../modules/CommentBox');
+
+
+module.exports = CommentsPage = React.createClass({
+    displayName: 'CommentsPage',
+    render: function() {
+        return (
+            React.DOM.div({
+                    className: 'CommentsPage'
+                },
+                React.DOM.h2({
+                        className: 'class-name-h2'
+                    },
+                    'Commentspage page!!'
+                ),
+                React.DOM.p({
+                        className: 'class-name-p'
+                    },
+                    'CommentsPage paragraph thingy'
+                ),
+                React.createElement(CommentBox, {
+                    initialState: this.props.initialState,
+                    url: 'comments.json',
+                    pollInterval: 10000
+                })
+            )
+        );
+    }
+});
+
+},{"../modules/CommentBox":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentBox.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/FrontPage.js":[function(require,module,exports){
+var React = require('react');
+
+
+module.exports = FrontPage = React.createClass({
+    displayName: 'FrontPage',
+    render: function() {
+        return (
+            React.DOM.div({
+                    className: 'FrontPage'
+                },
+                React.DOM.h2({
+                        className: 'class-name-h2'
+                    },
+                    'FrontPage page!! Welcome to Hotpads.'
+                ),
+                React.DOM.p({
+                        className: 'class-name-p'
+                    },
+                    'FrontPage paragraph thingy'
+                ),
+                this.props.children
+            )
+        );
+    }
+});
+
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/IsoBegins.js":[function(require,module,exports){
 var React = require('react');
 
 module.exports = IsoBegins = React.createClass({
@@ -314,7 +398,7 @@ module.exports = IsoBegins = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/IsoBegins2.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/IsoBegins2.js":[function(require,module,exports){
 var React = require('react');
 
 module.exports = IsoBegins2 = React.createClass({
@@ -330,7 +414,34 @@ module.exports = IsoBegins2 = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/NotFound.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/MapSearchPage.js":[function(require,module,exports){
+var React = require('react');
+
+
+module.exports = MapSearchPage = React.createClass({
+    displayName: 'MapSearchPage',
+    render: function() {
+        return (
+            React.DOM.div({
+                    className: 'MapSearchPage'
+                },
+                React.DOM.h2({
+                        className: 'class-name-h2'
+                    },
+                    'Main page!!'
+                ),
+                React.DOM.p({
+                        className: 'class-name-p'
+                    },
+                    'MapSearchPage paragraph thingy'
+                ),
+                this.props.children
+            )
+        );
+    }
+});
+
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/NotFound.js":[function(require,module,exports){
 var React = require('react');
 
 module.exports = NotFound = React.createClass({
@@ -341,33 +452,6 @@ module.exports = NotFound = React.createClass({
                     className: 'notFound'
                 },
                 '404 error! page not found'
-            )
-        );
-    }
-});
-
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/MainPage.js":[function(require,module,exports){
-var React = require('react');
-
-
-module.exports = MainPage = React.createClass({
-    displayName: 'MainPage',
-    render: function() {
-        return (
-            React.DOM.div({
-                    className: 'MainPage'
-                },
-                React.DOM.h2({
-                        className: 'class-name-h2'
-                    },
-                    'Main page!!'
-                ),
-                React.DOM.p({
-                        className: 'class-name-p'
-                    },
-                    'MainPage paragraph thingy'
-                ),
-                this.props.children
             )
         );
     }
