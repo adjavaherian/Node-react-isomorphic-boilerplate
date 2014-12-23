@@ -59,7 +59,10 @@ var App = React.createClass({
                 React.createElement('body', null,
                     React.createElement('p', {
                         className: 'envType'
-                    }, 'This is an example of an isomorphic web app. Navigating to any page url directly (or hitting refresh) will serve it up with server-side rendering. After the initial load, all subsequent page loads are client rendered. The coolest part about it is that you resuse the same components/code on the server and client! Super efficient and scalable for a big team. #yay'),
+                    }, 'ISOMORPHIC WEB APP --  Navigating to any page url directly (or hitting refresh) will serve it up with server-side rendering. After the initial load, all subsequent page loads are client rendered. The coolest part about it is that you resuse the same components/code on the server and client! Super efficient and scalable for a big team. #yay'),
+                   React.createElement('a', {
+                        href: '/server/frontpage'
+                    }, 'Click to go to the server-side ONLY rendering application (/server/* for example /server/frontpage)'),
                     React.createElement(HeaderNav, {
                         path: this.props.path
                     }),

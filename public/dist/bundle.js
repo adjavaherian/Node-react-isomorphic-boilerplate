@@ -60,7 +60,10 @@ var App = React.createClass({
                 React.createElement('body', null,
                     React.createElement('p', {
                         className: 'envType'
-                    }, 'This is an example of an isomorphic web app. Navigating to any page url directly (or hitting refresh) will serve it up with server-side rendering. After the initial load, all subsequent page loads are client rendered. The coolest part about it is that you resuse the same components/code on the server and client! Super efficient and scalable for a big team. #yay'),
+                    }, 'ISOMORPHIC WEB APP --  Navigating to any page url directly (or hitting refresh) will serve it up with server-side rendering. After the initial load, all subsequent page loads are client rendered. The coolest part about it is that you resuse the same components/code on the server and client! Super efficient and scalable for a big team. #yay'),
+                   React.createElement('a', {
+                        href: '/server/frontpage'
+                    }, 'Click to go to the server-side ONLY rendering application (/server/* for example /server/frontpage)'),
                     React.createElement(HeaderNav, {
                         path: this.props.path
                     }),
@@ -303,21 +306,27 @@ module.exports = HeaderNav = React.createClass({
                     className: 'HeaderNav'
                 },
                 React.createElement(Link, {
+                    className: "btn btn-default",
                     href: "/"
                 }, 'Frontpage!'),
                 React.createElement(Link, {
+                    className: "btn btn-default",
                     href: "/1"
                 }, 'Go to page 1'),
                 React.createElement(Link, {
+                    className: "btn btn-default",
                     href: "/2"
                 }, 'Go to page 2'),
                 React.createElement(Link, {
+                    className: "btn btn-default",
                     href: "/mapsearchpage"
                 }, 'Map search now!'),
                 React.createElement(Link, {
+                    className: "btn btn-default",
                     href: "/comments-page"
                 }, 'Go to page comments-page'),
                 React.createElement(Link, {
+                    className: "btn btn-default",
                     href: "/404"
                 }, 'Go to page not found')
             )
@@ -459,10 +468,18 @@ module.exports = NotFound = React.createClass({
     displayName: 'NotFound',
     render: function() {
         return (
-            React.createElement('h1', {
-                    className: 'notFound'
+            React.createElement('div', {
+                    className: 'notFoundWrapper'
                 },
-                '404 error! page not found'
+                React.createElement('h1', {
+                        className: 'notFound'
+                    },
+                    '404 error! page not found.'
+                ),
+                React.createElement('p', {
+                        className: 'notFound'
+                    },
+                    'feel free to type anything in the url. most likely you\'ll end up here. (`/server/*` --> ssr vs `/*` --> iso)')
             )
         );
     }

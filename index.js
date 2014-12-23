@@ -56,8 +56,10 @@ var CommentsPage = require('./app/components/pages/CommentsPage');
 app.route('/server/:path').get(function(req, res, next) {
     var path = req.params.path;
     console.log('SERVER SIDE RENDERING');
-    var markup = 'This is an example of Server-side rendering ONLY. Every time you navigate a page the browser will make a full HTTP request (same as typing in the new url directly or hitting refresh).';
-    markup += '<div><a href="/server/frontpage">Frontpage!</a><a href="/server/1">Go to page 1</a><a href="/server/2">Go to page 2</a><a href="/server/mapsearchpage">Map search now!</a><a href="/server/comments-page">Go to page comments-page</a><a href="/server/404">Go to page not found</a></div>';
+    var markup = '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">';
+    markup += 'SERVER-SIDE RENDERING -- Every time you navigate a page the browser will make a full HTTP request (same as typing in the new url directly or hitting refresh).';
+    markup += '<div><a class="btn btn-default" href="/server/frontpage">Frontpage!</a><a class="btn btn-default" href="/server/1">Go to page 1</a><a class="btn btn-default" href="/server/2">Go to page 2</a><a class="btn btn-default" href="/server/mapsearchpage">Map search now!</a><a class="btn btn-default" href="/server/comments-page">Go to page comments-page</a><a class="btn btn-default" href="/server/404">Go to page not found</a></div>';
+    markup += '<div><p><a href="/">Click to go back to the isomorphic app! just get rid of `server` from your /server/* urls</a></p></div>';
     if (path == 'frontpage') {
         var reactElement = React.createElement(FrontPage, {});
     } else if (path == '1') {
