@@ -1,24 +1,42 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./app/App.js":[function(require,module,exports){
 var config = require('../config');
 var React = require('react');
+var Router = require('react-router-component');
 var $ = require('jquery');
+var url = require('url');
 
 // var CommentBox = React.createFactory(require('./components/CommentBox'));
 var CommentBox = require('./components/CommentBox');
 
-var IsoBegins = React.createFactory(require('./components/IsoBegins'));
+
+var IsoBegins = require('./components/IsoBegins');
+var IsoBegins2 = require('./components/IsoBegins2');
+var NotFoundPage = require('./components/NotFound');
+
+var Link = Router.Link;
+var Locations = Router.Locations;
+var Location = Router.Location;
+var NotFound = Router.NotFound;
+
+var MainPage = require('./components/pages/MainPage');
 
 if (typeof window !== 'undefined') {
     // trigger render to bind UI to application on front end
     window.onload = function() {
         console.log('CLIENT-ONLY CODE; re-render on load to initialize UI elements and all')
+        var path = url.parse(document.URL).pathname;
+        console.log('CLIENT path: ' + path)
         var initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
         // pass initial state into app on client side render
         React.render(React.createElement(App, {
+            path: path,
             initialState: initialState
         }), document);
     };
 }
+
+
+
 
 var App = React.createClass({
     displayName: 'App',
@@ -39,17 +57,44 @@ var App = React.createClass({
                     React.createElement('title', null, 'React App'),
                     React.createElement('link', {
                         rel: 'stylesheet',
-                        href: '/stylesheets/style.css'
-                    })
+                        href: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'
+                    }),
+                    React.createElement(Locations, {
+                            path: this.props.path
+                        },
+                        React.createElement(Location, {
+                            path: "/1",
+                            handler: IsoBegins
+                        }),
+                        React.createElement(Location, {
+                            path: "/2",
+                            handler: IsoBegins2
+                        }),
+                        React.createElement(NotFound, {
+                            handler: NotFoundPage
+
+                        })
+                    )
                 ),
                 React.createElement('body', null,
                     React.createElement('div', {
+                            className: 'container',
                             id: 'main'
                         },
                         React.createElement('div', {
                                 id: 'content'
                             },
-                            'Information and stuff'),
+                            'Information and stuff',
+                            React.createElement(Link, {
+                                href: "/1"
+                            }, 'Go to page 1'),
+                            React.createElement(Link, {
+                                href: "/2"
+                            }, 'Go to page 2'),
+                            React.createElement(Link, {
+                                href: "/404"
+                            }, 'Go to page not found')
+                        ),
                         React.createElement(CommentBox, {
                             initialState: this.props.initialState,
                             url: 'comments.json',
@@ -73,7 +118,7 @@ var App = React.createClass({
 
 module.exports = App;
 
-},{"../config":"/Users/federicot/Dropbox/Projects/react-isomorph/config.js","./components/CommentBox":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/CommentBox.js","./components/IsoBegins":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/IsoBegins.js","jquery":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/Comment.js":[function(require,module,exports){
+},{"../config":"/Users/federicot/Dropbox/Projects/react-isomorph/config.js","./components/CommentBox":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/CommentBox.js","./components/IsoBegins":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/IsoBegins.js","./components/IsoBegins2":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/IsoBegins2.js","./components/NotFound":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/NotFound.js","./components/pages/MainPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/MainPage.js","jquery":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js","url":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/url/url.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/Comment.js":[function(require,module,exports){
 var React = require('react');
 
 
@@ -264,6 +309,65 @@ module.exports = IsoBegins = React.createClass({
                     className: 'isoBegins'
                 },
                 'HELLO WORLD. NOW WE ARE GETTING THERE'
+            )
+        );
+    }
+});
+
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/IsoBegins2.js":[function(require,module,exports){
+var React = require('react');
+
+module.exports = IsoBegins2 = React.createClass({
+    displayName: 'IsoBegins2',
+    render: function() {
+        return (
+            React.createElement('h1', {
+                    className: 'isoBegins2'
+                },
+                'PAGE2222'
+            )
+        );
+    }
+});
+
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/NotFound.js":[function(require,module,exports){
+var React = require('react');
+
+module.exports = NotFound = React.createClass({
+    displayName: 'NotFound',
+    render: function() {
+        return (
+            React.createElement('h1', {
+                    className: 'notFound'
+                },
+                '404 error! page not found'
+            )
+        );
+    }
+});
+
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/MainPage.js":[function(require,module,exports){
+var React = require('react');
+
+
+module.exports = MainPage = React.createClass({
+    displayName: 'MainPage',
+    render: function() {
+        return (
+            React.DOM.div({
+                    className: 'MainPage'
+                },
+                React.DOM.h2({
+                        className: 'class-name-h2'
+                    },
+                    'Main page!!'
+                ),
+                React.DOM.p({
+                        className: 'class-name-p'
+                    },
+                    'MainPage paragraph thingy'
+                ),
+                this.props.children
             )
         );
     }
@@ -1132,7 +1236,1406 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js":[function(require,module,exports){
+},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/punycode/punycode.js":[function(require,module,exports){
+(function (global){
+/*! http://mths.be/punycode v1.2.4 by @mathias */
+;(function(root) {
+
+	/** Detect free variables */
+	var freeExports = typeof exports == 'object' && exports;
+	var freeModule = typeof module == 'object' && module &&
+		module.exports == freeExports && module;
+	var freeGlobal = typeof global == 'object' && global;
+	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+		root = freeGlobal;
+	}
+
+	/**
+	 * The `punycode` object.
+	 * @name punycode
+	 * @type Object
+	 */
+	var punycode,
+
+	/** Highest positive signed 32-bit float value */
+	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
+
+	/** Bootstring parameters */
+	base = 36,
+	tMin = 1,
+	tMax = 26,
+	skew = 38,
+	damp = 700,
+	initialBias = 72,
+	initialN = 128, // 0x80
+	delimiter = '-', // '\x2D'
+
+	/** Regular expressions */
+	regexPunycode = /^xn--/,
+	regexNonASCII = /[^ -~]/, // unprintable ASCII chars + non-ASCII chars
+	regexSeparators = /\x2E|\u3002|\uFF0E|\uFF61/g, // RFC 3490 separators
+
+	/** Error messages */
+	errors = {
+		'overflow': 'Overflow: input needs wider integers to process',
+		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+		'invalid-input': 'Invalid input'
+	},
+
+	/** Convenience shortcuts */
+	baseMinusTMin = base - tMin,
+	floor = Math.floor,
+	stringFromCharCode = String.fromCharCode,
+
+	/** Temporary variable */
+	key;
+
+	/*--------------------------------------------------------------------------*/
+
+	/**
+	 * A generic error utility function.
+	 * @private
+	 * @param {String} type The error type.
+	 * @returns {Error} Throws a `RangeError` with the applicable error message.
+	 */
+	function error(type) {
+		throw RangeError(errors[type]);
+	}
+
+	/**
+	 * A generic `Array#map` utility function.
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} callback The function that gets called for every array
+	 * item.
+	 * @returns {Array} A new array of values returned by the callback function.
+	 */
+	function map(array, fn) {
+		var length = array.length;
+		while (length--) {
+			array[length] = fn(array[length]);
+		}
+		return array;
+	}
+
+	/**
+	 * A simple `Array#map`-like wrapper to work with domain name strings.
+	 * @private
+	 * @param {String} domain The domain name.
+	 * @param {Function} callback The function that gets called for every
+	 * character.
+	 * @returns {Array} A new string of characters returned by the callback
+	 * function.
+	 */
+	function mapDomain(string, fn) {
+		return map(string.split(regexSeparators), fn).join('.');
+	}
+
+	/**
+	 * Creates an array containing the numeric code points of each Unicode
+	 * character in the string. While JavaScript uses UCS-2 internally,
+	 * this function will convert a pair of surrogate halves (each of which
+	 * UCS-2 exposes as separate characters) into a single code point,
+	 * matching UTF-16.
+	 * @see `punycode.ucs2.encode`
+	 * @see <http://mathiasbynens.be/notes/javascript-encoding>
+	 * @memberOf punycode.ucs2
+	 * @name decode
+	 * @param {String} string The Unicode input string (UCS-2).
+	 * @returns {Array} The new array of code points.
+	 */
+	function ucs2decode(string) {
+		var output = [],
+		    counter = 0,
+		    length = string.length,
+		    value,
+		    extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	/**
+	 * Creates a string based on an array of numeric code points.
+	 * @see `punycode.ucs2.decode`
+	 * @memberOf punycode.ucs2
+	 * @name encode
+	 * @param {Array} codePoints The array of numeric code points.
+	 * @returns {String} The new Unicode string (UCS-2).
+	 */
+	function ucs2encode(array) {
+		return map(array, function(value) {
+			var output = '';
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+			return output;
+		}).join('');
+	}
+
+	/**
+	 * Converts a basic code point into a digit/integer.
+	 * @see `digitToBasic()`
+	 * @private
+	 * @param {Number} codePoint The basic numeric code point value.
+	 * @returns {Number} The numeric value of a basic code point (for use in
+	 * representing integers) in the range `0` to `base - 1`, or `base` if
+	 * the code point does not represent a value.
+	 */
+	function basicToDigit(codePoint) {
+		if (codePoint - 48 < 10) {
+			return codePoint - 22;
+		}
+		if (codePoint - 65 < 26) {
+			return codePoint - 65;
+		}
+		if (codePoint - 97 < 26) {
+			return codePoint - 97;
+		}
+		return base;
+	}
+
+	/**
+	 * Converts a digit/integer into a basic code point.
+	 * @see `basicToDigit()`
+	 * @private
+	 * @param {Number} digit The numeric value of a basic code point.
+	 * @returns {Number} The basic code point whose value (when used for
+	 * representing integers) is `digit`, which needs to be in the range
+	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+	 * used; else, the lowercase form is used. The behavior is undefined
+	 * if `flag` is non-zero and `digit` has no uppercase form.
+	 */
+	function digitToBasic(digit, flag) {
+		//  0..25 map to ASCII a..z or A..Z
+		// 26..35 map to ASCII 0..9
+		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+	}
+
+	/**
+	 * Bias adaptation function as per section 3.4 of RFC 3492.
+	 * http://tools.ietf.org/html/rfc3492#section-3.4
+	 * @private
+	 */
+	function adapt(delta, numPoints, firstTime) {
+		var k = 0;
+		delta = firstTime ? floor(delta / damp) : delta >> 1;
+		delta += floor(delta / numPoints);
+		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+			delta = floor(delta / baseMinusTMin);
+		}
+		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+	}
+
+	/**
+	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The Punycode string of ASCII-only symbols.
+	 * @returns {String} The resulting string of Unicode symbols.
+	 */
+	function decode(input) {
+		// Don't use UCS-2
+		var output = [],
+		    inputLength = input.length,
+		    out,
+		    i = 0,
+		    n = initialN,
+		    bias = initialBias,
+		    basic,
+		    j,
+		    index,
+		    oldi,
+		    w,
+		    k,
+		    digit,
+		    t,
+		    /** Cached calculation results */
+		    baseMinusT;
+
+		// Handle the basic code points: let `basic` be the number of input code
+		// points before the last delimiter, or `0` if there is none, then copy
+		// the first basic code points to the output.
+
+		basic = input.lastIndexOf(delimiter);
+		if (basic < 0) {
+			basic = 0;
+		}
+
+		for (j = 0; j < basic; ++j) {
+			// if it's not a basic code point
+			if (input.charCodeAt(j) >= 0x80) {
+				error('not-basic');
+			}
+			output.push(input.charCodeAt(j));
+		}
+
+		// Main decoding loop: start just after the last delimiter if any basic code
+		// points were copied; start at the beginning otherwise.
+
+		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
+
+			// `index` is the index of the next character to be consumed.
+			// Decode a generalized variable-length integer into `delta`,
+			// which gets added to `i`. The overflow checking is easier
+			// if we increase `i` as we go, then subtract off its starting
+			// value at the end to obtain `delta`.
+			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
+
+				if (index >= inputLength) {
+					error('invalid-input');
+				}
+
+				digit = basicToDigit(input.charCodeAt(index++));
+
+				if (digit >= base || digit > floor((maxInt - i) / w)) {
+					error('overflow');
+				}
+
+				i += digit * w;
+				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+
+				if (digit < t) {
+					break;
+				}
+
+				baseMinusT = base - t;
+				if (w > floor(maxInt / baseMinusT)) {
+					error('overflow');
+				}
+
+				w *= baseMinusT;
+
+			}
+
+			out = output.length + 1;
+			bias = adapt(i - oldi, out, oldi == 0);
+
+			// `i` was supposed to wrap around from `out` to `0`,
+			// incrementing `n` each time, so we'll fix that now:
+			if (floor(i / out) > maxInt - n) {
+				error('overflow');
+			}
+
+			n += floor(i / out);
+			i %= out;
+
+			// Insert `n` at position `i` of the output
+			output.splice(i++, 0, n);
+
+		}
+
+		return ucs2encode(output);
+	}
+
+	/**
+	 * Converts a string of Unicode symbols to a Punycode string of ASCII-only
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The string of Unicode symbols.
+	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
+	 */
+	function encode(input) {
+		var n,
+		    delta,
+		    handledCPCount,
+		    basicLength,
+		    bias,
+		    j,
+		    m,
+		    q,
+		    k,
+		    t,
+		    currentValue,
+		    output = [],
+		    /** `inputLength` will hold the number of code points in `input`. */
+		    inputLength,
+		    /** Cached calculation results */
+		    handledCPCountPlusOne,
+		    baseMinusT,
+		    qMinusT;
+
+		// Convert the input in UCS-2 to Unicode
+		input = ucs2decode(input);
+
+		// Cache the length
+		inputLength = input.length;
+
+		// Initialize the state
+		n = initialN;
+		delta = 0;
+		bias = initialBias;
+
+		// Handle the basic code points
+		for (j = 0; j < inputLength; ++j) {
+			currentValue = input[j];
+			if (currentValue < 0x80) {
+				output.push(stringFromCharCode(currentValue));
+			}
+		}
+
+		handledCPCount = basicLength = output.length;
+
+		// `handledCPCount` is the number of code points that have been handled;
+		// `basicLength` is the number of basic code points.
+
+		// Finish the basic string - if it is not empty - with a delimiter
+		if (basicLength) {
+			output.push(delimiter);
+		}
+
+		// Main encoding loop:
+		while (handledCPCount < inputLength) {
+
+			// All non-basic code points < n have been handled already. Find the next
+			// larger one:
+			for (m = maxInt, j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+				if (currentValue >= n && currentValue < m) {
+					m = currentValue;
+				}
+			}
+
+			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+			// but guard against overflow
+			handledCPCountPlusOne = handledCPCount + 1;
+			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+				error('overflow');
+			}
+
+			delta += (m - n) * handledCPCountPlusOne;
+			n = m;
+
+			for (j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+
+				if (currentValue < n && ++delta > maxInt) {
+					error('overflow');
+				}
+
+				if (currentValue == n) {
+					// Represent delta as a generalized variable-length integer
+					for (q = delta, k = base; /* no condition */; k += base) {
+						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+						if (q < t) {
+							break;
+						}
+						qMinusT = q - t;
+						baseMinusT = base - t;
+						output.push(
+							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+						);
+						q = floor(qMinusT / baseMinusT);
+					}
+
+					output.push(stringFromCharCode(digitToBasic(q, 0)));
+					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+					delta = 0;
+					++handledCPCount;
+				}
+			}
+
+			++delta;
+			++n;
+
+		}
+		return output.join('');
+	}
+
+	/**
+	 * Converts a Punycode string representing a domain name to Unicode. Only the
+	 * Punycoded parts of the domain name will be converted, i.e. it doesn't
+	 * matter if you call it on a string that has already been converted to
+	 * Unicode.
+	 * @memberOf punycode
+	 * @param {String} domain The Punycode domain name to convert to Unicode.
+	 * @returns {String} The Unicode representation of the given Punycode
+	 * string.
+	 */
+	function toUnicode(domain) {
+		return mapDomain(domain, function(string) {
+			return regexPunycode.test(string)
+				? decode(string.slice(4).toLowerCase())
+				: string;
+		});
+	}
+
+	/**
+	 * Converts a Unicode string representing a domain name to Punycode. Only the
+	 * non-ASCII parts of the domain name will be converted, i.e. it doesn't
+	 * matter if you call it with a domain that's already in ASCII.
+	 * @memberOf punycode
+	 * @param {String} domain The domain name to convert, as a Unicode string.
+	 * @returns {String} The Punycode representation of the given domain name.
+	 */
+	function toASCII(domain) {
+		return mapDomain(domain, function(string) {
+			return regexNonASCII.test(string)
+				? 'xn--' + encode(string)
+				: string;
+		});
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	/** Define the public API */
+	punycode = {
+		/**
+		 * A string representing the current Punycode.js version number.
+		 * @memberOf punycode
+		 * @type String
+		 */
+		'version': '1.2.4',
+		/**
+		 * An object of methods to convert from JavaScript's internal character
+		 * representation (UCS-2) to Unicode code points, and back.
+		 * @see <http://mathiasbynens.be/notes/javascript-encoding>
+		 * @memberOf punycode
+		 * @type Object
+		 */
+		'ucs2': {
+			'decode': ucs2decode,
+			'encode': ucs2encode
+		},
+		'decode': decode,
+		'encode': encode,
+		'toASCII': toASCII,
+		'toUnicode': toUnicode
+	};
+
+	/** Expose `punycode` */
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		typeof define == 'function' &&
+		typeof define.amd == 'object' &&
+		define.amd
+	) {
+		define('punycode', function() {
+			return punycode;
+		});
+	} else if (freeExports && !freeExports.nodeType) {
+		if (freeModule) { // in Node.js or RingoJS v0.8.0+
+			freeModule.exports = punycode;
+		} else { // in Narwhal or RingoJS v0.7.0-
+			for (key in punycode) {
+				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
+			}
+		}
+	} else { // in Rhino or a web browser
+		root.punycode = punycode;
+	}
+
+}(this));
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+// If obj.hasOwnProperty has been overridden, then calling
+// obj.hasOwnProperty(prop) will break.
+// See: https://github.com/joyent/node/issues/1707
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+module.exports = function(qs, sep, eq, options) {
+  sep = sep || '&';
+  eq = eq || '=';
+  var obj = {};
+
+  if (typeof qs !== 'string' || qs.length === 0) {
+    return obj;
+  }
+
+  var regexp = /\+/g;
+  qs = qs.split(sep);
+
+  var maxKeys = 1000;
+  if (options && typeof options.maxKeys === 'number') {
+    maxKeys = options.maxKeys;
+  }
+
+  var len = qs.length;
+  // maxKeys <= 0 means that we should not limit keys count
+  if (maxKeys > 0 && len > maxKeys) {
+    len = maxKeys;
+  }
+
+  for (var i = 0; i < len; ++i) {
+    var x = qs[i].replace(regexp, '%20'),
+        idx = x.indexOf(eq),
+        kstr, vstr, k, v;
+
+    if (idx >= 0) {
+      kstr = x.substr(0, idx);
+      vstr = x.substr(idx + 1);
+    } else {
+      kstr = x;
+      vstr = '';
+    }
+
+    k = decodeURIComponent(kstr);
+    v = decodeURIComponent(vstr);
+
+    if (!hasOwnProperty(obj, k)) {
+      obj[k] = v;
+    } else if (isArray(obj[k])) {
+      obj[k].push(v);
+    } else {
+      obj[k] = [obj[k], v];
+    }
+  }
+
+  return obj;
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+var stringifyPrimitive = function(v) {
+  switch (typeof v) {
+    case 'string':
+      return v;
+
+    case 'boolean':
+      return v ? 'true' : 'false';
+
+    case 'number':
+      return isFinite(v) ? v : '';
+
+    default:
+      return '';
+  }
+};
+
+module.exports = function(obj, sep, eq, name) {
+  sep = sep || '&';
+  eq = eq || '=';
+  if (obj === null) {
+    obj = undefined;
+  }
+
+  if (typeof obj === 'object') {
+    return map(objectKeys(obj), function(k) {
+      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+      if (isArray(obj[k])) {
+        return map(obj[k], function(v) {
+          return ks + encodeURIComponent(stringifyPrimitive(v));
+        }).join(sep);
+      } else {
+        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+      }
+    }).join(sep);
+
+  }
+
+  if (!name) return '';
+  return encodeURIComponent(stringifyPrimitive(name)) + eq +
+         encodeURIComponent(stringifyPrimitive(obj));
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+function map (xs, f) {
+  if (xs.map) return xs.map(f);
+  var res = [];
+  for (var i = 0; i < xs.length; i++) {
+    res.push(f(xs[i], i));
+  }
+  return res;
+}
+
+var objectKeys = Object.keys || function (obj) {
+  var res = [];
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
+  }
+  return res;
+};
+
+},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
+'use strict';
+
+exports.decode = exports.parse = require('./decode');
+exports.encode = exports.stringify = require('./encode');
+
+},{"./decode":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/querystring-es3/encode.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/url/url.js":[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var punycode = require('punycode');
+
+exports.parse = urlParse;
+exports.resolve = urlResolve;
+exports.resolveObject = urlResolveObject;
+exports.format = urlFormat;
+
+exports.Url = Url;
+
+function Url() {
+  this.protocol = null;
+  this.slashes = null;
+  this.auth = null;
+  this.host = null;
+  this.port = null;
+  this.hostname = null;
+  this.hash = null;
+  this.search = null;
+  this.query = null;
+  this.pathname = null;
+  this.path = null;
+  this.href = null;
+}
+
+// Reference: RFC 3986, RFC 1808, RFC 2396
+
+// define these here so at least they only have to be
+// compiled once on the first module load.
+var protocolPattern = /^([a-z0-9.+-]+:)/i,
+    portPattern = /:[0-9]*$/,
+
+    // RFC 2396: characters reserved for delimiting URLs.
+    // We actually just auto-escape these.
+    delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
+
+    // RFC 2396: characters not allowed for various reasons.
+    unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
+
+    // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
+    autoEscape = ['\''].concat(unwise),
+    // Characters that are never ever allowed in a hostname.
+    // Note that any invalid chars are also handled, but these
+    // are the ones that are *expected* to be seen, so we fast-path
+    // them.
+    nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
+    hostEndingChars = ['/', '?', '#'],
+    hostnameMaxLen = 255,
+    hostnamePartPattern = /^[a-z0-9A-Z_-]{0,63}$/,
+    hostnamePartStart = /^([a-z0-9A-Z_-]{0,63})(.*)$/,
+    // protocols that can allow "unsafe" and "unwise" chars.
+    unsafeProtocol = {
+      'javascript': true,
+      'javascript:': true
+    },
+    // protocols that never have a hostname.
+    hostlessProtocol = {
+      'javascript': true,
+      'javascript:': true
+    },
+    // protocols that always contain a // bit.
+    slashedProtocol = {
+      'http': true,
+      'https': true,
+      'ftp': true,
+      'gopher': true,
+      'file': true,
+      'http:': true,
+      'https:': true,
+      'ftp:': true,
+      'gopher:': true,
+      'file:': true
+    },
+    querystring = require('querystring');
+
+function urlParse(url, parseQueryString, slashesDenoteHost) {
+  if (url && isObject(url) && url instanceof Url) return url;
+
+  var u = new Url;
+  u.parse(url, parseQueryString, slashesDenoteHost);
+  return u;
+}
+
+Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
+  if (!isString(url)) {
+    throw new TypeError("Parameter 'url' must be a string, not " + typeof url);
+  }
+
+  var rest = url;
+
+  // trim before proceeding.
+  // This is to support parse stuff like "  http://foo.com  \n"
+  rest = rest.trim();
+
+  var proto = protocolPattern.exec(rest);
+  if (proto) {
+    proto = proto[0];
+    var lowerProto = proto.toLowerCase();
+    this.protocol = lowerProto;
+    rest = rest.substr(proto.length);
+  }
+
+  // figure out if it's got a host
+  // user@server is *always* interpreted as a hostname, and url
+  // resolution will treat //foo/bar as host=foo,path=bar because that's
+  // how the browser resolves relative URLs.
+  if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
+    var slashes = rest.substr(0, 2) === '//';
+    if (slashes && !(proto && hostlessProtocol[proto])) {
+      rest = rest.substr(2);
+      this.slashes = true;
+    }
+  }
+
+  if (!hostlessProtocol[proto] &&
+      (slashes || (proto && !slashedProtocol[proto]))) {
+
+    // there's a hostname.
+    // the first instance of /, ?, ;, or # ends the host.
+    //
+    // If there is an @ in the hostname, then non-host chars *are* allowed
+    // to the left of the last @ sign, unless some host-ending character
+    // comes *before* the @-sign.
+    // URLs are obnoxious.
+    //
+    // ex:
+    // http://a@b@c/ => user:a@b host:c
+    // http://a@b?@c => user:a host:c path:/?@c
+
+    // v0.12 TODO(isaacs): This is not quite how Chrome does things.
+    // Review our test case against browsers more comprehensively.
+
+    // find the first instance of any hostEndingChars
+    var hostEnd = -1;
+    for (var i = 0; i < hostEndingChars.length; i++) {
+      var hec = rest.indexOf(hostEndingChars[i]);
+      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+        hostEnd = hec;
+    }
+
+    // at this point, either we have an explicit point where the
+    // auth portion cannot go past, or the last @ char is the decider.
+    var auth, atSign;
+    if (hostEnd === -1) {
+      // atSign can be anywhere.
+      atSign = rest.lastIndexOf('@');
+    } else {
+      // atSign must be in auth portion.
+      // http://a@b/c@d => host:b auth:a path:/c@d
+      atSign = rest.lastIndexOf('@', hostEnd);
+    }
+
+    // Now we have a portion which is definitely the auth.
+    // Pull that off.
+    if (atSign !== -1) {
+      auth = rest.slice(0, atSign);
+      rest = rest.slice(atSign + 1);
+      this.auth = decodeURIComponent(auth);
+    }
+
+    // the host is the remaining to the left of the first non-host char
+    hostEnd = -1;
+    for (var i = 0; i < nonHostChars.length; i++) {
+      var hec = rest.indexOf(nonHostChars[i]);
+      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+        hostEnd = hec;
+    }
+    // if we still have not hit it, then the entire thing is a host.
+    if (hostEnd === -1)
+      hostEnd = rest.length;
+
+    this.host = rest.slice(0, hostEnd);
+    rest = rest.slice(hostEnd);
+
+    // pull out port.
+    this.parseHost();
+
+    // we've indicated that there is a hostname,
+    // so even if it's empty, it has to be present.
+    this.hostname = this.hostname || '';
+
+    // if hostname begins with [ and ends with ]
+    // assume that it's an IPv6 address.
+    var ipv6Hostname = this.hostname[0] === '[' &&
+        this.hostname[this.hostname.length - 1] === ']';
+
+    // validate a little.
+    if (!ipv6Hostname) {
+      var hostparts = this.hostname.split(/\./);
+      for (var i = 0, l = hostparts.length; i < l; i++) {
+        var part = hostparts[i];
+        if (!part) continue;
+        if (!part.match(hostnamePartPattern)) {
+          var newpart = '';
+          for (var j = 0, k = part.length; j < k; j++) {
+            if (part.charCodeAt(j) > 127) {
+              // we replace non-ASCII char with a temporary placeholder
+              // we need this to make sure size of hostname is not
+              // broken by replacing non-ASCII by nothing
+              newpart += 'x';
+            } else {
+              newpart += part[j];
+            }
+          }
+          // we test again with ASCII char only
+          if (!newpart.match(hostnamePartPattern)) {
+            var validParts = hostparts.slice(0, i);
+            var notHost = hostparts.slice(i + 1);
+            var bit = part.match(hostnamePartStart);
+            if (bit) {
+              validParts.push(bit[1]);
+              notHost.unshift(bit[2]);
+            }
+            if (notHost.length) {
+              rest = '/' + notHost.join('.') + rest;
+            }
+            this.hostname = validParts.join('.');
+            break;
+          }
+        }
+      }
+    }
+
+    if (this.hostname.length > hostnameMaxLen) {
+      this.hostname = '';
+    } else {
+      // hostnames are always lower case.
+      this.hostname = this.hostname.toLowerCase();
+    }
+
+    if (!ipv6Hostname) {
+      // IDNA Support: Returns a puny coded representation of "domain".
+      // It only converts the part of the domain name that
+      // has non ASCII characters. I.e. it dosent matter if
+      // you call it with a domain that already is in ASCII.
+      var domainArray = this.hostname.split('.');
+      var newOut = [];
+      for (var i = 0; i < domainArray.length; ++i) {
+        var s = domainArray[i];
+        newOut.push(s.match(/[^A-Za-z0-9_-]/) ?
+            'xn--' + punycode.encode(s) : s);
+      }
+      this.hostname = newOut.join('.');
+    }
+
+    var p = this.port ? ':' + this.port : '';
+    var h = this.hostname || '';
+    this.host = h + p;
+    this.href += this.host;
+
+    // strip [ and ] from the hostname
+    // the host field still retains them, though
+    if (ipv6Hostname) {
+      this.hostname = this.hostname.substr(1, this.hostname.length - 2);
+      if (rest[0] !== '/') {
+        rest = '/' + rest;
+      }
+    }
+  }
+
+  // now rest is set to the post-host stuff.
+  // chop off any delim chars.
+  if (!unsafeProtocol[lowerProto]) {
+
+    // First, make 100% sure that any "autoEscape" chars get
+    // escaped, even if encodeURIComponent doesn't think they
+    // need to be.
+    for (var i = 0, l = autoEscape.length; i < l; i++) {
+      var ae = autoEscape[i];
+      var esc = encodeURIComponent(ae);
+      if (esc === ae) {
+        esc = escape(ae);
+      }
+      rest = rest.split(ae).join(esc);
+    }
+  }
+
+
+  // chop off from the tail first.
+  var hash = rest.indexOf('#');
+  if (hash !== -1) {
+    // got a fragment string.
+    this.hash = rest.substr(hash);
+    rest = rest.slice(0, hash);
+  }
+  var qm = rest.indexOf('?');
+  if (qm !== -1) {
+    this.search = rest.substr(qm);
+    this.query = rest.substr(qm + 1);
+    if (parseQueryString) {
+      this.query = querystring.parse(this.query);
+    }
+    rest = rest.slice(0, qm);
+  } else if (parseQueryString) {
+    // no query string, but parseQueryString still requested
+    this.search = '';
+    this.query = {};
+  }
+  if (rest) this.pathname = rest;
+  if (slashedProtocol[lowerProto] &&
+      this.hostname && !this.pathname) {
+    this.pathname = '/';
+  }
+
+  //to support http.request
+  if (this.pathname || this.search) {
+    var p = this.pathname || '';
+    var s = this.search || '';
+    this.path = p + s;
+  }
+
+  // finally, reconstruct the href based on what has been validated.
+  this.href = this.format();
+  return this;
+};
+
+// format a parsed object into a url string
+function urlFormat(obj) {
+  // ensure it's an object, and not a string url.
+  // If it's an obj, this is a no-op.
+  // this way, you can call url_format() on strings
+  // to clean up potentially wonky urls.
+  if (isString(obj)) obj = urlParse(obj);
+  if (!(obj instanceof Url)) return Url.prototype.format.call(obj);
+  return obj.format();
+}
+
+Url.prototype.format = function() {
+  var auth = this.auth || '';
+  if (auth) {
+    auth = encodeURIComponent(auth);
+    auth = auth.replace(/%3A/i, ':');
+    auth += '@';
+  }
+
+  var protocol = this.protocol || '',
+      pathname = this.pathname || '',
+      hash = this.hash || '',
+      host = false,
+      query = '';
+
+  if (this.host) {
+    host = auth + this.host;
+  } else if (this.hostname) {
+    host = auth + (this.hostname.indexOf(':') === -1 ?
+        this.hostname :
+        '[' + this.hostname + ']');
+    if (this.port) {
+      host += ':' + this.port;
+    }
+  }
+
+  if (this.query &&
+      isObject(this.query) &&
+      Object.keys(this.query).length) {
+    query = querystring.stringify(this.query);
+  }
+
+  var search = this.search || (query && ('?' + query)) || '';
+
+  if (protocol && protocol.substr(-1) !== ':') protocol += ':';
+
+  // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
+  // unless they had them to begin with.
+  if (this.slashes ||
+      (!protocol || slashedProtocol[protocol]) && host !== false) {
+    host = '//' + (host || '');
+    if (pathname && pathname.charAt(0) !== '/') pathname = '/' + pathname;
+  } else if (!host) {
+    host = '';
+  }
+
+  if (hash && hash.charAt(0) !== '#') hash = '#' + hash;
+  if (search && search.charAt(0) !== '?') search = '?' + search;
+
+  pathname = pathname.replace(/[?#]/g, function(match) {
+    return encodeURIComponent(match);
+  });
+  search = search.replace('#', '%23');
+
+  return protocol + host + pathname + search + hash;
+};
+
+function urlResolve(source, relative) {
+  return urlParse(source, false, true).resolve(relative);
+}
+
+Url.prototype.resolve = function(relative) {
+  return this.resolveObject(urlParse(relative, false, true)).format();
+};
+
+function urlResolveObject(source, relative) {
+  if (!source) return relative;
+  return urlParse(source, false, true).resolveObject(relative);
+}
+
+Url.prototype.resolveObject = function(relative) {
+  if (isString(relative)) {
+    var rel = new Url();
+    rel.parse(relative, false, true);
+    relative = rel;
+  }
+
+  var result = new Url();
+  Object.keys(this).forEach(function(k) {
+    result[k] = this[k];
+  }, this);
+
+  // hash is always overridden, no matter what.
+  // even href="" will remove it.
+  result.hash = relative.hash;
+
+  // if the relative url is empty, then there's nothing left to do here.
+  if (relative.href === '') {
+    result.href = result.format();
+    return result;
+  }
+
+  // hrefs like //foo/bar always cut to the protocol.
+  if (relative.slashes && !relative.protocol) {
+    // take everything except the protocol from relative
+    Object.keys(relative).forEach(function(k) {
+      if (k !== 'protocol')
+        result[k] = relative[k];
+    });
+
+    //urlParse appends trailing / to urls like http://www.example.com
+    if (slashedProtocol[result.protocol] &&
+        result.hostname && !result.pathname) {
+      result.path = result.pathname = '/';
+    }
+
+    result.href = result.format();
+    return result;
+  }
+
+  if (relative.protocol && relative.protocol !== result.protocol) {
+    // if it's a known url protocol, then changing
+    // the protocol does weird things
+    // first, if it's not file:, then we MUST have a host,
+    // and if there was a path
+    // to begin with, then we MUST have a path.
+    // if it is file:, then the host is dropped,
+    // because that's known to be hostless.
+    // anything else is assumed to be absolute.
+    if (!slashedProtocol[relative.protocol]) {
+      Object.keys(relative).forEach(function(k) {
+        result[k] = relative[k];
+      });
+      result.href = result.format();
+      return result;
+    }
+
+    result.protocol = relative.protocol;
+    if (!relative.host && !hostlessProtocol[relative.protocol]) {
+      var relPath = (relative.pathname || '').split('/');
+      while (relPath.length && !(relative.host = relPath.shift()));
+      if (!relative.host) relative.host = '';
+      if (!relative.hostname) relative.hostname = '';
+      if (relPath[0] !== '') relPath.unshift('');
+      if (relPath.length < 2) relPath.unshift('');
+      result.pathname = relPath.join('/');
+    } else {
+      result.pathname = relative.pathname;
+    }
+    result.search = relative.search;
+    result.query = relative.query;
+    result.host = relative.host || '';
+    result.auth = relative.auth;
+    result.hostname = relative.hostname || relative.host;
+    result.port = relative.port;
+    // to support http.request
+    if (result.pathname || result.search) {
+      var p = result.pathname || '';
+      var s = result.search || '';
+      result.path = p + s;
+    }
+    result.slashes = result.slashes || relative.slashes;
+    result.href = result.format();
+    return result;
+  }
+
+  var isSourceAbs = (result.pathname && result.pathname.charAt(0) === '/'),
+      isRelAbs = (
+          relative.host ||
+          relative.pathname && relative.pathname.charAt(0) === '/'
+      ),
+      mustEndAbs = (isRelAbs || isSourceAbs ||
+                    (result.host && relative.pathname)),
+      removeAllDots = mustEndAbs,
+      srcPath = result.pathname && result.pathname.split('/') || [],
+      relPath = relative.pathname && relative.pathname.split('/') || [],
+      psychotic = result.protocol && !slashedProtocol[result.protocol];
+
+  // if the url is a non-slashed url, then relative
+  // links like ../.. should be able
+  // to crawl up to the hostname, as well.  This is strange.
+  // result.protocol has already been set by now.
+  // Later on, put the first path part into the host field.
+  if (psychotic) {
+    result.hostname = '';
+    result.port = null;
+    if (result.host) {
+      if (srcPath[0] === '') srcPath[0] = result.host;
+      else srcPath.unshift(result.host);
+    }
+    result.host = '';
+    if (relative.protocol) {
+      relative.hostname = null;
+      relative.port = null;
+      if (relative.host) {
+        if (relPath[0] === '') relPath[0] = relative.host;
+        else relPath.unshift(relative.host);
+      }
+      relative.host = null;
+    }
+    mustEndAbs = mustEndAbs && (relPath[0] === '' || srcPath[0] === '');
+  }
+
+  if (isRelAbs) {
+    // it's absolute.
+    result.host = (relative.host || relative.host === '') ?
+                  relative.host : result.host;
+    result.hostname = (relative.hostname || relative.hostname === '') ?
+                      relative.hostname : result.hostname;
+    result.search = relative.search;
+    result.query = relative.query;
+    srcPath = relPath;
+    // fall through to the dot-handling below.
+  } else if (relPath.length) {
+    // it's relative
+    // throw away the existing file, and take the new path instead.
+    if (!srcPath) srcPath = [];
+    srcPath.pop();
+    srcPath = srcPath.concat(relPath);
+    result.search = relative.search;
+    result.query = relative.query;
+  } else if (!isNullOrUndefined(relative.search)) {
+    // just pull out the search.
+    // like href='?foo'.
+    // Put this after the other two cases because it simplifies the booleans
+    if (psychotic) {
+      result.hostname = result.host = srcPath.shift();
+      //occationaly the auth can get stuck only in host
+      //this especialy happens in cases like
+      //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+      var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                       result.host.split('@') : false;
+      if (authInHost) {
+        result.auth = authInHost.shift();
+        result.host = result.hostname = authInHost.shift();
+      }
+    }
+    result.search = relative.search;
+    result.query = relative.query;
+    //to support http.request
+    if (!isNull(result.pathname) || !isNull(result.search)) {
+      result.path = (result.pathname ? result.pathname : '') +
+                    (result.search ? result.search : '');
+    }
+    result.href = result.format();
+    return result;
+  }
+
+  if (!srcPath.length) {
+    // no path at all.  easy.
+    // we've already handled the other stuff above.
+    result.pathname = null;
+    //to support http.request
+    if (result.search) {
+      result.path = '/' + result.search;
+    } else {
+      result.path = null;
+    }
+    result.href = result.format();
+    return result;
+  }
+
+  // if a url ENDs in . or .., then it must get a trailing slash.
+  // however, if it ends in anything else non-slashy,
+  // then it must NOT get a trailing slash.
+  var last = srcPath.slice(-1)[0];
+  var hasTrailingSlash = (
+      (result.host || relative.host) && (last === '.' || last === '..') ||
+      last === '');
+
+  // strip single dots, resolve double dots to parent dir
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = srcPath.length; i >= 0; i--) {
+    last = srcPath[i];
+    if (last == '.') {
+      srcPath.splice(i, 1);
+    } else if (last === '..') {
+      srcPath.splice(i, 1);
+      up++;
+    } else if (up) {
+      srcPath.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (!mustEndAbs && !removeAllDots) {
+    for (; up--; up) {
+      srcPath.unshift('..');
+    }
+  }
+
+  if (mustEndAbs && srcPath[0] !== '' &&
+      (!srcPath[0] || srcPath[0].charAt(0) !== '/')) {
+    srcPath.unshift('');
+  }
+
+  if (hasTrailingSlash && (srcPath.join('/').substr(-1) !== '/')) {
+    srcPath.push('');
+  }
+
+  var isAbsolute = srcPath[0] === '' ||
+      (srcPath[0] && srcPath[0].charAt(0) === '/');
+
+  // put the host back
+  if (psychotic) {
+    result.hostname = result.host = isAbsolute ? '' :
+                                    srcPath.length ? srcPath.shift() : '';
+    //occationaly the auth can get stuck only in host
+    //this especialy happens in cases like
+    //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+    var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                     result.host.split('@') : false;
+    if (authInHost) {
+      result.auth = authInHost.shift();
+      result.host = result.hostname = authInHost.shift();
+    }
+  }
+
+  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
+
+  if (mustEndAbs && !isAbsolute) {
+    srcPath.unshift('');
+  }
+
+  if (!srcPath.length) {
+    result.pathname = null;
+    result.path = null;
+  } else {
+    result.pathname = srcPath.join('/');
+  }
+
+  //to support request.http
+  if (!isNull(result.pathname) || !isNull(result.search)) {
+    result.path = (result.pathname ? result.pathname : '') +
+                  (result.search ? result.search : '');
+  }
+  result.auth = relative.auth || result.auth;
+  result.slashes = result.slashes || relative.slashes;
+  result.href = result.format();
+  return result;
+};
+
+Url.prototype.parseHost = function() {
+  var host = this.host;
+  var port = portPattern.exec(host);
+  if (port) {
+    port = port[0];
+    if (port !== ':') {
+      this.port = port.substr(1);
+    }
+    host = host.substr(0, host.length - port.length);
+  }
+  if (host) this.hostname = host;
+};
+
+function isString(arg) {
+  return typeof arg === "string";
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isNull(arg) {
+  return arg === null;
+}
+function isNullOrUndefined(arg) {
+  return  arg == null;
+}
+
+},{"punycode":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/punycode/punycode.js","querystring":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js":[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v1.11.2
  * http://jquery.com/
@@ -11479,6 +12982,1472 @@ if ( typeof noGlobal === strundefined ) {
 return jQuery;
 
 }));
+
+},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-async/lib/isAsyncComponent.js":[function(require,module,exports){
+"use strict";
+
+/**
+ * Check if a component is an async component.
+ *
+ * @param {ReactComponent} component
+ */
+function isAsyncComponent(component) {
+  return component.type.prototype && typeof component.type.prototype.getInitialStateAsync === 'function';
+}
+
+module.exports = isAsyncComponent;
+
+},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-async/lib/prefetchAsyncState.js":[function(require,module,exports){
+"use strict";
+
+var invariant         = require('react/lib/invariant');
+var cloneWithProps    = require('react/lib/cloneWithProps');
+var isAsyncComponent  = require('./isAsyncComponent');
+
+/**
+ * Prefetch an async state for an unmounted async component instance.
+ *
+ * @param {ReactComponent} component
+ * @param {Callback} cb
+ */
+function prefetchAsyncState(component, cb) {
+
+  invariant(
+    isAsyncComponent(component),
+    "%s should be an async component to be able to prefetch async state, " +
+    "but getInitialStateAsync(cb) method is missing or is not a function",
+    component.displayName
+  );
+
+  var cloneCallback = function(err, asyncState) {
+    if (err) {
+      return cb(err);
+    }
+
+    cb(null, cloneWithProps(component, {asyncState: asyncState || {}}));
+  };
+  var getInitialStateAsync = component.type.prototype.getInitialStateAsync;
+  var promise = getInitialStateAsync.call(component, cloneCallback);
+
+  if (promise && typeof promise.then === 'function') {
+    promise.then(cloneCallback.bind(cloneCallback, null), cloneCallback);
+  }
+}
+
+module.exports = prefetchAsyncState;
+
+},{"./isAsyncComponent":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-async/lib/isAsyncComponent.js","react/lib/cloneWithProps":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/cloneWithProps.js","react/lib/invariant":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/invariant.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js":[function(require,module,exports){
+"use strict";
+
+var Router                    = require('./lib/Router');
+var Route                     = require('./lib/Route');
+var Link                      = require('./lib/Link');
+
+var RouterMixin               = require('./lib/RouterMixin');
+var AsyncRouteRenderingMixin  = require('./lib/AsyncRouteRenderingMixin');
+var RouteRenderingMixin       = require('./lib/RouteRenderingMixin');
+
+var NavigatableMixin          = require('./lib/NavigatableMixin');
+
+var environment               = require('./lib/environment');
+
+var CaptureClicks             = require('./lib/CaptureClicks');
+
+module.exports = {
+  Locations: Router.Locations,
+  Pages: Router.Pages,
+
+  Location: Route.Route,
+  Page: Route.Route,
+  NotFound: Route.NotFound,
+
+  Link: Link,
+
+  environment: environment,
+
+  RouterMixin: RouterMixin,
+  RouteRenderingMixin: RouteRenderingMixin,
+  AsyncRouteRenderingMixin: AsyncRouteRenderingMixin,
+
+  NavigatableMixin: NavigatableMixin,
+  CaptureClicks: CaptureClicks
+};
+
+},{"./lib/AsyncRouteRenderingMixin":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/AsyncRouteRenderingMixin.js","./lib/CaptureClicks":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/CaptureClicks.js","./lib/Link":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/Link.js","./lib/NavigatableMixin":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/NavigatableMixin.js","./lib/Route":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/Route.js","./lib/RouteRenderingMixin":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/RouteRenderingMixin.js","./lib/Router":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/Router.js","./lib/RouterMixin":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/RouterMixin.js","./lib/environment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/AsyncRouteRenderingMixin.js":[function(require,module,exports){
+"use strict";
+
+var assign              = Object.assign || require('object.assign');
+var prefetchAsyncState  = require('react-async/lib/prefetchAsyncState');
+var isAsyncComponent    = require('react-async/lib/isAsyncComponent');
+var RouteRenderingMixin = require('./RouteRenderingMixin');
+
+/**
+ * Mixin for router components which prefetches state of async components
+ * (as in react-async).
+ */
+var AsyncRouteRenderingMixin = {
+  mixins: [RouteRenderingMixin],
+
+  setRoutingState: function(state, cb) {
+    var currentHandler = this.state && this.state.handler;
+    var nextHandler = state && state.handler;
+
+    if (nextHandler && nextHandler.type && 
+        isAsyncComponent(nextHandler) &&
+        // if component's type is the same we would need to skip async state
+        // update
+        !(currentHandler && currentHandler.type === nextHandler.type)) {
+      // store pending state and start fetching async state of a new handler
+      this.setState(
+        {pendingState: state},
+        this.prefetchMatchHandlerState.bind(null, state, cb)
+      );
+    } else {
+      this.replaceState(state, cb);
+    }
+  },
+
+  hasPendingUpdate: function() {
+    return !!this.state.pendingState;
+  },
+
+  prefetchMatchHandlerState: function(state, cb) {
+    prefetchAsyncState(state.handler, function(err, handler) {
+      // check if we router is still mounted and have the same match in state
+      // as we started fetching state with
+      if (this.isMounted() &&
+          this.state.pendingState &&
+          this.state.pendingState.match === state.match) {
+        var nextState = assign({}, this.state.pendingState, {handler: handler});
+        this.replaceState(nextState, cb);
+
+      }
+    }.bind(this));
+  }
+};
+
+module.exports = AsyncRouteRenderingMixin;
+
+},{"./RouteRenderingMixin":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/RouteRenderingMixin.js","object.assign":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/index.js","react-async/lib/isAsyncComponent":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-async/lib/isAsyncComponent.js","react-async/lib/prefetchAsyncState":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-async/lib/prefetchAsyncState.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/CaptureClicks.js":[function(require,module,exports){
+"use strict";
+
+var React       = require('react');
+var urllite     = require('urllite/lib/core');
+var Environment = require('./environment');
+var assign      = Object.assign || require('object.assign');
+
+/**
+ * A container component which captures <a> clicks and, if there's a matching
+ * route defined, routes them.
+ */
+var CaptureClicks = React.createClass({
+  displayName: 'CaptureClicks',
+
+  propTypes: {
+    component: React.PropTypes.func.isRequired,
+    environment: React.PropTypes.object
+  },
+
+  getDefaultProps: function() {
+    return {
+      component: React.DOM.div,
+      environment: Environment.defaultEnvironment,
+      gotoURL: function(url) {
+        // We should really just be allowing the event's default action, be we
+        // can't make the decision to do that synchronously.
+        window.location.href = url;
+      }
+    };
+  },
+
+  onClick: function(e) {
+    if (this.props.onClick) {
+      this.props.onClick(e);
+    }
+
+    // Ignore canceled events, modified clicks, and right clicks.
+    if (e.defaultPrevented) {
+      return;
+    }
+
+    if (e.metaKey || e.ctrlKey || e.shiftKey) {
+      return;
+    }
+
+    if (e.button !== 0) {
+      return;
+    }
+
+    // Get the <a> element.
+    var el = e.target;
+    while (el && el.nodeName !== 'A') {
+      el = el.parentNode;
+    }
+
+    // Ignore clicks from non-a elements.
+    if (!el) {
+      return;
+    }
+
+    // Ignore the click if the element has a target.
+    if (el.target && el.target !== '_self') {
+      return;
+    }
+
+    // Ignore the click if it's a download link. (We use this method of
+    // detecting the presence of the attribute for old IE versions.)
+    if (!!el.attributes.download) {
+      return;
+    }
+
+    // Use a regular expression to parse URLs instead of relying on the browser
+    // to do it for us (because IE).
+    var url = urllite(el.href);
+    var windowURL = urllite(window.location.href);
+
+    // Ignore links that don't share a protocol and host with ours.
+    if (url.protocol !== windowURL.protocol || url.host !== windowURL.host) {
+      return;
+    }
+
+    // Ignore 'rel="external"' links.
+    if (el.rel && /(?:^|\s+)external(?:\s+|$)/.test(el.rel)) {
+      return;
+    }
+
+    e.preventDefault();
+
+    // flag if we already found a "not found" case and bailed
+    var bail = false;
+
+    var onBeforeNavigation = function(path, navigation) {
+      if (bail) {
+        return false;
+      } else if (!navigation.match || !navigation.match.match) {
+        bail = true;
+        this.props.gotoURL(el.href);
+        return false;
+      }
+    }.bind(this);
+
+    this.props.environment.navigate(
+      url.pathname + (url.hash.length > 1 ? url.hash : ''),
+      {onBeforeNavigation: onBeforeNavigation},
+      function(err, info) {
+        if (err) {
+          throw err;
+        }
+      });
+  },
+
+  render: function() {
+    var props = assign({}, this.props, {
+      onClick: this.onClick
+    });
+    return this.props.component(props, this.props.children);
+  }
+
+});
+
+module.exports = CaptureClicks;
+
+},{"./environment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/index.js","object.assign":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/index.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","urllite/lib/core":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/urllite/lib/core.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/Link.js":[function(require,module,exports){
+"use strict";
+
+var React             = require('react');
+var NavigatableMixin  = require('./NavigatableMixin');
+var Environment       = require('./environment');
+var assign            = Object.assign || require('object.assign');
+
+/**
+ * Link.
+ *
+ * A basic navigatable component which renders into <a> DOM element and handles
+ * onClick event by transitioning onto different route (defined by
+ * this.props.href).
+ */
+var Link = React.createClass({
+  mixins: [NavigatableMixin],
+
+  displayName: 'Link',
+
+  propTypes: {
+    href: React.PropTypes.string.isRequired,
+    global: React.PropTypes.bool,
+    globalHash: React.PropTypes.bool
+  },
+
+  onClick: function(e) {
+    if (this.props.onClick) {
+      this.props.onClick(e);
+    }
+    
+    // return if the user did a middle-click, right-click, or used a modifier
+    // key (like ctrl-click, meta-click, shift-click, etc.)
+    if (e.button !== 0 || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+
+    if (!e.defaultPrevented) {
+      e.preventDefault();
+      this._navigate(this.props.href, function(err) {
+        if (err) {
+          throw err;
+        }
+      });
+    }
+  },
+
+  _navigationParams: function() {
+    var params = {};
+    for (var k in this.props) {
+      if (!this.constructor.propTypes[k]) {
+        params[k] = this.props[k];
+      }
+    }
+    return params;
+  },
+
+  _createHref: function() {
+    return this.props.global ?
+      Environment.defaultEnvironment.makeHref(this.props.href) :
+      this.makeHref(this.props.href);
+  },
+
+  _navigate: function(path, cb) {
+    if (this.props.globalHash) {
+      return Environment.hashEnvironment.navigate(path, cb);
+    }
+
+    if (this.props.global) {
+      return Environment.defaultEnvironment.navigate(path, cb);
+    }
+
+    return this.navigate(path, this._navigationParams(), cb);
+  },
+
+  render: function() {
+    var props = assign({}, this.props, {
+      onClick: this.onClick,
+      href: this._createHref()
+    });
+    return React.DOM.a(props, this.props.children);
+  }
+});
+
+module.exports = Link;
+
+},{"./NavigatableMixin":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/NavigatableMixin.js","./environment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/index.js","object.assign":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/index.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/NavigatableMixin.js":[function(require,module,exports){
+"use strict";
+
+var React       = require('react');
+var Environment = require('./environment');
+
+
+/**
+ * NavigatableMixin
+ *
+ * A mixin for a component which operates in context of a router and can
+ * navigate to a different route using `navigate(path, cb)` method.
+ */
+var NavigatableMixin = {
+
+  contextTypes: {
+    router: React.PropTypes.any
+  },
+
+  /**
+   * @private
+   */
+  _getNavigable: function() {
+    return this.context.router || Environment.defaultEnvironment;
+  },
+
+  getPath: function() {
+    return this._getNavigable().getPath();
+  },
+
+  navigate: function(path, cb) {
+    return this._getNavigable().navigate(path, cb);
+  },
+
+  makeHref: function(path) {
+    return this._getNavigable().makeHref(path);
+  }
+};
+
+module.exports = NavigatableMixin;
+
+},{"./environment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/index.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/Route.js":[function(require,module,exports){
+"use strict";
+
+var React     = require('react');
+
+function createClass(name) {
+  return React.createClass({
+    propTypes: {
+      handler: React.PropTypes.element.isRequired,
+      path: name === 'NotFound' ? 
+        function(props, propName) {
+          if (props[propName]) throw new Error("Don't pass a `path` to NotFound.");
+        }
+        : React.PropTypes.string.isRequired
+    },
+    getDefaultProps: function() {
+      if (name === 'NotFound') {
+        return {path: null};
+      }
+      return {};
+    },
+    render: function() {
+      throw new Error(name + " is not meant to be directly rendered.");
+    }
+  });
+}
+
+module.exports = {
+  /**
+   * Regular route descriptor.
+   *
+   * @param {Object} spec
+   */
+  Route: createClass('Route'),
+  /**
+   * Catch all route descriptor.
+   *
+   * @param {Object} spec
+   */
+  NotFound: createClass('NotFound')
+};
+
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/RouteRenderingMixin.js":[function(require,module,exports){
+"use strict";
+
+var React  = require('react');
+var cloneWithProps = require('react/lib/cloneWithProps');
+
+/**
+ * Mixin for routers which implements the simplest rendering strategy.
+ */
+var RouteRenderingMixin = {
+
+  renderRouteHandler: function() {
+    var handler = this.state.handler;
+    // If we were passed an element, we need to clone it before passing it along.
+    var props = {ref: this.state.match.route.ref};
+    if (React.isValidElement(handler)) {
+      return cloneWithProps(handler, props);
+    }
+    return React.createElement(handler, props);
+  }
+
+};
+
+module.exports = RouteRenderingMixin;
+
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react/lib/cloneWithProps":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/cloneWithProps.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/Router.js":[function(require,module,exports){
+"use strict";
+
+var React                     = require('react');
+var RouterMixin               = require('./RouterMixin');
+var AsyncRouteRenderingMixin  = require('./AsyncRouteRenderingMixin');
+var assign                    = Object.assign || require('object.assign');
+
+/**
+ * Create a new router class
+ *
+ * @param {String} name
+ * @param {ReactComponent} component
+ */
+function createRouter(name, component) {
+
+  return React.createClass({
+
+    mixins: [RouterMixin, AsyncRouteRenderingMixin],
+
+    displayName: name,
+
+    getRoutes: function(props) {
+      return props.children;
+    },
+
+    getDefaultProps: function() {
+      return {
+        component: component
+      }
+    },
+
+    render: function() {
+      // Render the Route's handler.
+      var handler = this.renderRouteHandler();
+      // Pass all props except this component to the Router (containing div/body).
+      var props = assign({}, this.props);
+      delete props.component;
+      return React.createElement(this.props.component, props, handler);
+    }
+  });
+}
+
+module.exports = {
+  createRouter: createRouter,
+  Locations: createRouter('Locations', 'div'),
+  Pages: createRouter('Pages', 'body')
+}
+
+},{"./AsyncRouteRenderingMixin":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/AsyncRouteRenderingMixin.js","./RouterMixin":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/RouterMixin.js","object.assign":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/index.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/RouterMixin.js":[function(require,module,exports){
+"use strict";
+
+var React         = require('react');
+var invariant     = require('react/lib/invariant');
+var assign        = Object.assign || require('object.assign');
+var matchRoutes   = require('./matchRoutes');
+var Environment   = require('./environment');
+
+var RouterMixin = {
+  mixins: [Environment.Mixin],
+
+  propTypes: {
+    path: React.PropTypes.string,
+    contextual: React.PropTypes.bool,
+    onBeforeNavigation: React.PropTypes.func,
+    onNavigation: React.PropTypes.func
+  },
+
+  childContextTypes: {
+    router: React.PropTypes.any
+  },
+
+  getChildContext: function() {
+    return {
+      router: this
+    };
+  },
+
+  contextTypes: {
+    router: React.PropTypes.any
+  },
+
+  getInitialState: function() {
+    return this.getRouterState(this.props);
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    var nextState = this.getRouterState(nextProps);
+    this.delegateSetRoutingState(nextState);
+  },
+
+  getRouterState: function(props) {
+    var path;
+    var prefix;
+
+    var parent = this.getParentRouter();
+
+    if (props.contextual && parent) {
+
+      var parentMatch = parent.getMatch();
+
+      invariant(
+        props.path ||
+        isString(parentMatch.unmatchedPath) ||
+        parentMatch.matchedPath == parentMatch.path,
+        "contextual router has nothing to match on: %s", parentMatch.unmatchedPath
+      );
+
+      path = props.path || parentMatch.unmatchedPath || '/';
+      prefix = parent.state.prefix + parentMatch.matchedPath;
+    } else {
+
+      path = props.path || this.getEnvironment().getPath();
+
+      invariant(
+        isString(path),
+        ("router operate in environment which cannot provide path, " +
+         "pass it a path prop; or probably you want to make it contextual")
+      );
+
+      prefix = '';
+    }
+
+    if (path[0] !== '/') {
+      path = '/' + path;
+    }
+
+    var match = matchRoutes(this.getRoutes(props), path);
+    var handler = match.getHandler();
+
+    return {
+      match: match,
+      handler: handler,
+      prefix: prefix,
+      navigation: {}
+    };
+  },
+
+  getEnvironment: function() {
+    if (this.props.environment) {
+      return this.props.environment;
+    }
+    if (this.props.hash) {
+      return Environment.hashEnvironment;
+    }
+    if (this.props.contextual && this.context.router) {
+      return this.context.router.getEnvironment();
+    }
+    return Environment.defaultEnvironment;
+  },
+
+  /**
+   * Return parent router or undefined.
+   */
+  getParentRouter: function() {
+    var current = this.context.router;
+    var environment = this.getEnvironment();
+
+    while (current) {
+      if (current.getEnvironment() === environment) {
+        return current;
+      }
+    }
+  },
+
+  /**
+   * Return current match.
+   */
+  getMatch: function() {
+    return this.state.match;
+  },
+
+  /**
+   * Make href scoped for the current router.
+   */
+  makeHref: function(href) {
+    return join(this.state.prefix, href);
+  },
+
+  /**
+   * Navigate to a path
+   *
+   * @param {String} path
+   * @param {Function} navigation
+   * @param {Callback} cb
+   */
+  navigate: function(path, navigation, cb) {
+    path = join(this.state.prefix, path);
+    this.getEnvironment().setPath(path, navigation, cb);
+  },
+
+  /**
+   * Set new path.
+   *
+   * This function is called by environment.
+   *
+   * @private
+   *
+   * @param {String} path
+   * @param {Function} navigation
+   * @param {Callback} cb
+   */
+  setPath: function(path, navigation, cb) {
+    var match = matchRoutes(this.getRoutes(this.props), path);
+    var handler = match.getHandler();
+
+    var state = {
+      match: match,
+      handler: handler,
+      prefix: this.state.prefix,
+      navigation: navigation
+    };
+
+    assign(navigation, {match: match});
+
+    if (this.props.onBeforeNavigation &&
+        this.props.onBeforeNavigation(path, navigation) === false) {
+      return;
+    }
+
+    if (navigation.onBeforeNavigation &&
+        navigation.onBeforeNavigation(path, navigation) === false) {
+      return;
+    }
+
+    this.delegateSetRoutingState(state, function() {
+      if (this.props.onNavigation) {
+        this.props.onNavigation();
+      }
+      cb();
+    }.bind(this));
+  },
+
+  /**
+   * Return the current path
+   */
+  getPath: function () {
+    return this.state.match.path;
+  },
+
+  /**
+   * Try to delegate state update to a setRoutingState method (might be provided
+   * by router itself) or use replaceState.
+   */
+  delegateSetRoutingState: function(state, cb) {
+    if (this.setRoutingState) {
+      this.setRoutingState(state, cb);
+    } else {
+      this.replaceState(state, cb);
+    }
+  }
+
+};
+
+function join(a, b) {
+  return (a + b).replace(/\/\//g, '/');
+}
+
+function isString(o) {
+  return Object.prototype.toString.call(o) === '[object String]';
+}
+
+module.exports = RouterMixin;
+
+},{"./environment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/index.js","./matchRoutes":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/matchRoutes.js","object.assign":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/index.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react/lib/invariant":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/invariant.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/DummyEnvironment.js":[function(require,module,exports){
+"use strict";
+
+var Environment   = require('./Environment');
+var emptyFunction = require('react/lib/emptyFunction');
+
+/**
+ * Dummy routing environment which provides no path.
+ *
+ * Should be used on server or in WebWorker.
+ */
+function DummyEnvironment() {
+  Environment.call(this);
+}
+
+DummyEnvironment.prototype = Object.create(Environment.prototype);
+DummyEnvironment.prototype.constructor = DummyEnvironment;
+
+DummyEnvironment.prototype.getPath = emptyFunction.thatReturnsNull;
+
+DummyEnvironment.prototype.setPath = function(path, navigation, cb) {
+  // Support old (path, cb) arity
+  if (typeof navigation === 'function' && cb === undefined) {
+    cb = navigation;
+    navigation = {};
+  }
+  this.path = path;
+  cb();
+};
+
+DummyEnvironment.prototype.start = emptyFunction;
+
+DummyEnvironment.prototype.stop = emptyFunction;
+
+module.exports = DummyEnvironment;
+
+},{"./Environment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/Environment.js","react/lib/emptyFunction":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/emptyFunction.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/Environment.js":[function(require,module,exports){
+"use strict";
+
+var ReactUpdates  = require('react/lib/ReactUpdates');
+
+/**
+ * Base abstract class for a routing environment.
+ *
+ * @private
+ */
+function Environment() {
+  this.routers = [];
+  this.path = this.getPath();
+}
+
+/**
+ * Notify routers about the change.
+ *
+ * @param {Object} navigation
+ * @param {Function} cb
+ */
+Environment.prototype.notify = function notify(navigation, cb) {
+  var latch = this.routers.length;
+
+  if (latch === 0) {
+    return cb && cb();
+  }
+
+  function callback() {
+    latch -= 1;
+    if (cb && latch === 0) {
+      cb();
+    }
+  }
+
+  ReactUpdates.batchedUpdates(function() {
+    for (var i = 0, len = this.routers.length; i < len; i++) {
+      this.routers[i].setPath(this.path, navigation, callback);
+    }
+  }.bind(this));
+}
+
+Environment.prototype.makeHref = function makeHref(path) {
+  return path;
+}
+
+Environment.prototype.navigate = function navigate(path, navigation, cb) {
+  return this.setPath(path, navigation, cb);
+}
+
+Environment.prototype.setPath = function(path, navigation, cb) {
+  // Support (path, cb) arity.
+  if (typeof navigation === 'function' && cb === undefined) {
+    cb = navigation;
+    navigation = {};
+  }
+  // Support (path) arity.
+  if (!navigation) navigation = {};
+
+  if (!navigation.isPopState) {
+    if (navigation.replace) {
+      this.replaceState(path, navigation);
+    } else {
+      this.pushState(path, navigation);
+    }
+  }
+  this.path = path;
+  this.notify(navigation, cb);
+}
+
+/**
+ * Register router with an environment.
+ */
+Environment.prototype.register = function register(router) {
+  if (this.routers.length === 0) {
+    this.start();
+  }
+
+  if (router.getParentRouter === undefined || !router.getParentRouter()) {
+    this.routers.push(router);
+  }
+}
+
+/**
+ * Unregister router from an environment.
+ */
+Environment.prototype.unregister = function unregister(router) {
+  if (this.routers.indexOf(router) > -1) {
+    this.routers.splice(this.routers.indexOf(router), 1);
+  }
+
+  if (this.routers.length === 0) {
+    this.stop();
+  }
+}
+
+module.exports = Environment;
+
+},{"react/lib/ReactUpdates":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/ReactUpdates.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/HashEnvironment.js":[function(require,module,exports){
+"use strict";
+
+var Environment = require('./Environment');
+
+/**
+ * Routing environment which routes by `location.hash`.
+ */
+function HashEnvironment() {
+  this.onHashChange = this.onHashChange.bind(this);
+  Environment.call(this);
+}
+
+HashEnvironment.prototype = Object.create(Environment.prototype);
+HashEnvironment.prototype.constructor = HashEnvironment;
+
+HashEnvironment.prototype.getPath = function() {
+  return window.location.hash.slice(1) || '/';
+};
+
+HashEnvironment.prototype.pushState = function(path, navigation) {
+  window.location.hash = path;
+}
+
+HashEnvironment.prototype.replaceState = function(path, navigation) {
+  var href = window.location.href.replace(/(javascript:|#).*$/, '');
+  window.location.replace(href + '#' + path);
+}
+
+HashEnvironment.prototype.start = function() {
+  if (window.addEventListener) {
+    window.addEventListener('hashchange', this.onHashChange);
+  } else {
+    window.attachEvent('onhashchange', this.onHashChange);
+  }
+};
+
+HashEnvironment.prototype.stop = function() {
+  if (window.removeEventListener) {
+    window.removeEventListener('hashchange', this.onHashChange);
+  } else {
+    window.detachEvent('onhashchange', this.onHashChange);
+  }
+};
+
+HashEnvironment.prototype.onHashChange = function() {
+  var path = this.getPath();
+
+  if (this.path !== path) {
+    this.setPath(path, {isPopState: true});
+  }
+};
+
+module.exports = HashEnvironment;
+
+},{"./Environment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/Environment.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/PathnameEnvironment.js":[function(require,module,exports){
+"use strict";
+
+var Environment = require('./Environment');
+
+/**
+ * Routing environment which routes by `location.pathname`.
+ */
+function PathnameEnvironment() {
+  this.onPopState = this.onPopState.bind(this);
+  Environment.call(this);
+}
+
+PathnameEnvironment.prototype = Object.create(Environment.prototype);
+PathnameEnvironment.prototype.constructor = PathnameEnvironment;
+
+PathnameEnvironment.prototype.getPath = function() {
+  return window.location.pathname;
+}
+
+PathnameEnvironment.prototype.pushState = function(path, navigation) {
+  window.history.pushState({}, '', path);
+}
+
+PathnameEnvironment.prototype.replaceState = function(path, navigation) {
+  window.history.replaceState({}, '', path);
+}
+
+PathnameEnvironment.prototype.start = function() {
+  if (window.addEventListener) {
+    window.addEventListener('popstate', this.onPopState);
+  }
+};
+
+PathnameEnvironment.prototype.stop = function() {
+  if (window.removeEventListener) {
+    window.removeEventListener('popstate', this.onPopState);
+  }
+};
+
+PathnameEnvironment.prototype.onPopState = function(e) {
+  var path = window.location.pathname;
+
+  if (this.path !== path) {
+    this.setPath(path, {isPopState: true});
+  }
+};
+
+module.exports = PathnameEnvironment;
+
+},{"./Environment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/Environment.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/index.js":[function(require,module,exports){
+"use strict";
+/**
+ * Routing environment.
+ *
+ * It specifies how routers read its state from DOM and synchronise it back.
+ */
+
+var ExecutionEnvironment  = require('react/lib/ExecutionEnvironment');
+var DummyEnvironment      = require('./DummyEnvironment');
+var Environment           = require('./Environment');
+
+/**
+ * Mixin for routes to keep attached to an environment.
+ *
+ * This mixin assumes the environment is passed via props.
+ */
+var Mixin = {
+
+  componentDidMount: function() {
+    this.getEnvironment().register(this);
+  },
+
+  componentWillUnmount: function() {
+    this.getEnvironment().unregister(this);
+  }
+};
+
+var PathnameEnvironment;
+var HashEnvironment;
+
+var pathnameEnvironment;
+var hashEnvironment;
+var defaultEnvironment;
+var dummyEnvironment;
+
+if (ExecutionEnvironment.canUseDOM) {
+
+  PathnameEnvironment = require('./PathnameEnvironment');
+  HashEnvironment     = require('./HashEnvironment');
+
+  pathnameEnvironment = new PathnameEnvironment();
+  hashEnvironment     = new HashEnvironment();
+  defaultEnvironment  = (window.history !== undefined &&
+                         window.history.pushState !== undefined) ?
+                        pathnameEnvironment :
+                        hashEnvironment;
+
+} else {
+
+  dummyEnvironment    = new DummyEnvironment();
+  pathnameEnvironment = dummyEnvironment;
+  hashEnvironment     = dummyEnvironment;
+  defaultEnvironment  = dummyEnvironment;
+
+}
+
+module.exports = {
+  pathnameEnvironment: pathnameEnvironment,
+  hashEnvironment: hashEnvironment,
+  defaultEnvironment: defaultEnvironment,
+  dummyEnvironment: dummyEnvironment,
+
+  Environment: Environment,
+  PathnameEnvironment: PathnameEnvironment,
+  HashEnvironment: HashEnvironment,
+
+  Mixin: Mixin
+};
+
+},{"./DummyEnvironment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/DummyEnvironment.js","./Environment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/Environment.js","./HashEnvironment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/HashEnvironment.js","./PathnameEnvironment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/environment/PathnameEnvironment.js","react/lib/ExecutionEnvironment":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/ExecutionEnvironment.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/lib/matchRoutes.js":[function(require,module,exports){
+(function (process){
+"use strict";
+
+var pattern   = require('url-pattern');
+var invariant = require('react/lib/invariant');
+var React  = require('react');
+var cloneWithProps = require('react/lib/cloneWithProps');
+var assign = Object.assign || require('object.assign');
+
+/**
+ * Match routes against a path
+ *
+ * @param {Array.<Route>} routes
+ * @param {String} path
+ */
+function matchRoutes(routes, path) {
+  var match, page, notFound;
+
+  if (!Array.isArray(routes)) {
+    routes = [routes];
+  }
+
+  for (var i = 0, len = routes.length; i < len; i++) {
+    var current = routes[i];
+    // Simply skip null or undefined to allow ternaries in route definitions
+    if (!current) continue;
+
+    if (process.env.NODE_ENV !== "production") {
+      invariant(
+        current.props.handler !== undefined && current.props.path !== undefined,
+        "Router should contain either Route or NotFound components " +
+        "as routes")
+    }
+
+    if (current.props.path) {
+      current.props.pattern = current.props.pattern || pattern.newPattern(current.props.path);
+      if (!page) {
+        match = current.props.pattern.match(path);
+        if (match) {
+          page = current;
+        }
+        // Parse RegExp matches, which are returned as an array rather an an object.
+        if (Array.isArray(match)) {
+          match = parseMatch(current, match);
+        }
+      }
+    }
+    if (!notFound && current.props.path === null) {
+      notFound = current;
+    }
+  }
+
+  return new Match(
+    path,
+    page ? page : notFound ? notFound : null,
+    match
+  );
+}
+
+/**
+ * Given the currently matched Location & the match array, transform the matches to named key/value pairs,
+ * if possible.
+ * @param  {Route} current Matched Route.
+ * @param  {Array} match   Array of matches from RegExp.
+ * @return {Object}        Key/value pairs to feed to the route's handler.
+ */
+function parseMatch(current, match) {
+  if (Array.isArray(current.props.matchKeys)) {
+    return current.props.matchKeys.reduce(function(memo, key, i) {
+      memo[key] = match[i];
+      return memo;
+    }, {});
+  }
+  return {_: match};
+}
+
+/**
+ * Match object
+ *
+ * @private
+ */
+function Match(path, route, match) {
+  this.path = path;
+  this.route = route;
+  this.match = match;
+
+  this.unmatchedPath = this.match && this.match._ ?
+    this.match._[0] :
+    null;
+
+  this.matchedPath = this.unmatchedPath ?
+    this.path.substring(0, this.path.length - this.unmatchedPath.length) :
+    this.path;
+}
+
+Match.prototype.getHandler = function() {
+  if (!this.route) return undefined;
+
+  var props = assign({}, this.route.props, this.match);
+  delete props.pattern;
+  delete props.path;
+  delete props.handler;
+  var handler = this.route.props.handler;
+  // Passed an element - clone it with the props from the route
+  if (React.isValidElement(handler)) {
+    return cloneWithProps(handler, props);
+  }
+  // Passed a component descriptor - create an element. Assign it the ref
+  // from the <Location> tag.
+  return React.createElement(handler, props);
+}
+
+module.exports = matchRoutes;
+
+}).call(this,require('_process'))
+},{"_process":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/process/browser.js","object.assign":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/index.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react/lib/cloneWithProps":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/cloneWithProps.js","react/lib/invariant":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/invariant.js","url-pattern":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/url-pattern/src/url-pattern.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/index.js":[function(require,module,exports){
+'use strict';
+
+// modified from https://github.com/es-shims/es6-shim
+var keys = require('object-keys');
+var canBeObject = function (obj) {
+	return typeof obj !== 'undefined' && obj !== null;
+};
+
+var assignShim = function assign(target, source1) {
+	if (!canBeObject(target)) { throw new TypeError('target must be an object'); }
+	var objTarget = Object(target);
+	var s, source, i, props;
+	for (s = 1; s < arguments.length; ++s) {
+		source = Object(arguments[s]);
+		props = keys(source);
+		for (i = 0; i < props.length; ++i) {
+			objTarget[props[i]] = source[props[i]];
+		}
+	}
+	return objTarget;
+};
+
+assignShim.shim = function shimObjectAssign() {
+	if (!Object.assign) {
+		Object.assign = assignShim;
+	}
+	return Object.assign || assignShim;
+};
+
+module.exports = assignShim;
+
+
+},{"object-keys":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/node_modules/object-keys/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/node_modules/object-keys/index.js":[function(require,module,exports){
+"use strict";
+
+// modified from https://github.com/es-shims/es5-shim
+var has = Object.prototype.hasOwnProperty;
+var toString = Object.prototype.toString;
+var isArgs = require('./isArguments');
+var hasDontEnumBug = !({'toString': null}).propertyIsEnumerable('toString');
+var hasProtoEnumBug = (function () {}).propertyIsEnumerable('prototype');
+var dontEnums = [
+	"toString",
+	"toLocaleString",
+	"valueOf",
+	"hasOwnProperty",
+	"isPrototypeOf",
+	"propertyIsEnumerable",
+	"constructor"
+];
+
+var keysShim = function keys(object) {
+	var isObject = object !== null && typeof object === 'object';
+	var isFunction = toString.call(object) === '[object Function]';
+	var isArguments = isArgs(object);
+	var isString = isObject && toString.call(object) === '[object String]';
+	var theKeys = [];
+
+	if (!isObject && !isFunction && !isArguments) {
+		throw new TypeError("Object.keys called on a non-object");
+	}
+
+	var skipProto = hasProtoEnumBug && isFunction;
+	if (isString && object.length > 0 && !has.call(object, 0)) {
+		for (var i = 0; i < object.length; ++i) {
+			theKeys.push(String(i));
+		}
+	}
+
+	if (isArguments && object.length > 0) {
+		for (var j = 0; j < object.length; ++j) {
+			theKeys.push(String(j));
+		}
+	} else {
+		for (var name in object) {
+			if (!(skipProto && name === 'prototype') && has.call(object, name)) {
+				theKeys.push(String(name));
+			}
+		}
+	}
+
+	if (hasDontEnumBug) {
+		var ctor = object.constructor;
+		var skipConstructor = ctor && ctor.prototype === object;
+
+		for (var j = 0; j < dontEnums.length; ++j) {
+			if (!(skipConstructor && dontEnums[j] === 'constructor') && has.call(object, dontEnums[j])) {
+				theKeys.push(dontEnums[j]);
+			}
+		}
+	}
+	return theKeys;
+};
+
+keysShim.shim = function shimObjectKeys() {
+	if (!Object.keys) {
+		Object.keys = keysShim;
+	}
+	return Object.keys || keysShim;
+};
+
+module.exports = keysShim;
+
+
+},{"./isArguments":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/node_modules/object-keys/isArguments.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/object.assign/node_modules/object-keys/isArguments.js":[function(require,module,exports){
+"use strict";
+
+var toString = Object.prototype.toString;
+
+module.exports = function isArguments(value) {
+	var str = toString.call(value);
+	var isArguments = str === '[object Arguments]';
+	if (!isArguments) {
+		isArguments = str !== '[object Array]'
+			&& value !== null
+			&& typeof value === 'object'
+			&& typeof value.length === 'number'
+			&& value.length >= 0
+			&& toString.call(value.callee) === '[object Function]';
+	}
+	return isArguments;
+};
+
+
+},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/url-pattern/src/url-pattern.js":[function(require,module,exports){
+// Generated by CoffeeScript 1.7.1
+var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+module.exports = {
+  PatternPrototype: {
+    match: function(url) {
+      var bound, captured, i, match, name, value, _i, _len;
+      match = this.regex.exec(url);
+      if (match == null) {
+        return null;
+      }
+      captured = match.slice(1);
+      if (this.isRegex) {
+        return captured;
+      }
+      bound = {};
+      for (i = _i = 0, _len = captured.length; _i < _len; i = ++_i) {
+        value = captured[i];
+        name = this.names[i];
+        if (value == null) {
+          continue;
+        }
+        if (name === '_') {
+          if (bound._ == null) {
+            bound._ = [];
+          }
+          bound._.push(value);
+        } else {
+          bound[name] = value;
+        }
+      }
+      return bound;
+    }
+  },
+  newPattern: function(arg, separator) {
+    var isRegex, pattern, regexString;
+    if (separator == null) {
+      separator = '/';
+    }
+    isRegex = arg instanceof RegExp;
+    if (!(('string' === typeof arg) || isRegex)) {
+      throw new TypeError('argument must be a regex or a string');
+    }
+    [':', '*'].forEach(function(forbidden) {
+      if (separator === forbidden) {
+        throw new Error("separator can't be " + forbidden);
+      }
+    });
+    pattern = Object.create(module.exports.PatternPrototype);
+    pattern.isRegex = isRegex;
+    pattern.regex = isRegex ? arg : (regexString = module.exports.toRegexString(arg, separator), new RegExp(regexString));
+    if (!isRegex) {
+      pattern.names = module.exports.getNames(arg, separator);
+    }
+    return pattern;
+  },
+  escapeForRegex: function(string) {
+    return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  },
+  getNames: function(arg, separator) {
+    var escapedSeparator, name, names, regex, results;
+    if (separator == null) {
+      separator = '/';
+    }
+    if (arg instanceof RegExp) {
+      return [];
+    }
+    escapedSeparator = module.exports.escapeForRegex(separator);
+    regex = new RegExp("((:?:[^" + escapedSeparator + "\(\)]+)|(?:[\*]))", 'g');
+    names = [];
+    results = regex.exec(arg);
+    while (results != null) {
+      name = results[1].slice(1);
+      if (name === '_') {
+        throw new TypeError(":_ can't be used as a pattern name in pattern " + arg);
+      }
+      if (__indexOf.call(names, name) >= 0) {
+        throw new TypeError("duplicate pattern name :" + name + " in pattern " + arg);
+      }
+      names.push(name || '_');
+      results = regex.exec(arg);
+    }
+    return names;
+  },
+  escapeSeparators: function(string, separator) {
+    var escapedSeparator, regex;
+    if (separator == null) {
+      separator = '/';
+    }
+    escapedSeparator = module.exports.escapeForRegex(separator);
+    regex = new RegExp(escapedSeparator, 'g');
+    return string.replace(regex, escapedSeparator);
+  },
+  toRegexString: function(string, separator) {
+    var escapedSeparator, stringWithEscapedSeparators;
+    if (separator == null) {
+      separator = '/';
+    }
+    stringWithEscapedSeparators = module.exports.escapeSeparators(string, separator);
+    stringWithEscapedSeparators = stringWithEscapedSeparators.replace(/\((.*?)\)/g, '(?:$1)?').replace(/\*/g, '(.*?)');
+    escapedSeparator = module.exports.escapeForRegex(separator);
+    module.exports.getNames(string, separator).forEach(function(name) {
+      return stringWithEscapedSeparators = stringWithEscapedSeparators.replace(':' + name, "([^\\" + separator + "]+)");
+    });
+    return "^" + stringWithEscapedSeparators + "$";
+  }
+};
+
+},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/node_modules/urllite/lib/core.js":[function(require,module,exports){
+(function() {
+  var URL, URL_PATTERN, defaults, urllite,
+    __hasProp = {}.hasOwnProperty,
+    __slice = [].slice;
+
+  URL_PATTERN = /^(?:(?:([^:\/?\#]+:)\/+|(\/\/))(?:([a-z0-9-\._~%]+)(?::([a-z0-9-\._~%]+))?@)?(([a-z0-9-\._~%!$&'()*+,;=]+)(?::([0-9]+))?)?)?([^?\#]*?)(\?[^\#]*)?(\#.*)?$/;
+
+  urllite = function(raw, opts) {
+    return urllite.URL.parse(raw, opts);
+  };
+
+  urllite.URL = URL = (function() {
+    function URL(props) {
+      var k, v;
+      for (k in props) {
+        if (!__hasProp.call(props, k)) continue;
+        v = props[k];
+        this[k] = v;
+      }
+    }
+
+    URL.parse = function(raw) {
+      var m, pathname, protocol;
+      m = raw.toString().match(URL_PATTERN);
+      pathname = m[8] || '';
+      protocol = m[1];
+      return urllite._createURL({
+        protocol: protocol,
+        username: m[3],
+        password: m[4],
+        hostname: m[6],
+        port: m[7],
+        pathname: protocol && pathname.charAt(0) !== '/' ? "/" + pathname : pathname,
+        search: m[9],
+        hash: m[10],
+        isSchemeRelative: m[2] != null
+      });
+    };
+
+    return URL;
+
+  })();
+
+  defaults = {
+    protocol: '',
+    username: '',
+    password: '',
+    host: '',
+    hostname: '',
+    port: '',
+    pathname: '',
+    search: '',
+    hash: '',
+    origin: '',
+    isSchemeRelative: false
+  };
+
+  urllite._createURL = function() {
+    var base, bases, k, props, v, _i, _len, _ref, _ref1;
+    bases = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    props = {};
+    for (_i = 0, _len = bases.length; _i < _len; _i++) {
+      base = bases[_i];
+      for (k in defaults) {
+        if (!__hasProp.call(defaults, k)) continue;
+        v = defaults[k];
+        props[k] = (_ref = (_ref1 = base[k]) != null ? _ref1 : props[k]) != null ? _ref : v;
+      }
+    }
+    props.host = props.hostname && props.port ? "" + props.hostname + ":" + props.port : props.hostname ? props.hostname : '';
+    props.origin = props.protocol ? "" + props.protocol + "//" + props.host : '';
+    props.isAbsolutePathRelative = !props.host && props.pathname.charAt(0) === '/';
+    props.isPathRelative = !props.host && props.pathname.charAt(0) !== '/';
+    props.isRelative = props.isSchemeRelative || props.isAbsolutePathRelative || props.isPathRelative;
+    props.isAbsolute = !props.isRelative;
+    return new urllite.URL(props);
+  };
+
+  module.exports = urllite;
+
+}).call(this);
 
 },{}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/AutoFocusMixin.js":[function(require,module,exports){
 /**
@@ -27303,7 +30272,66 @@ function camelizeStyleName(string) {
 
 module.exports = camelizeStyleName;
 
-},{"./camelize":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/camelize.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/containsNode.js":[function(require,module,exports){
+},{"./camelize":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/camelize.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/cloneWithProps.js":[function(require,module,exports){
+(function (process){
+/**
+ * Copyright 2013-2014, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @typechecks
+ * @providesModule cloneWithProps
+ */
+
+"use strict";
+
+var ReactElement = require("./ReactElement");
+var ReactPropTransferer = require("./ReactPropTransferer");
+
+var keyOf = require("./keyOf");
+var warning = require("./warning");
+
+var CHILDREN_PROP = keyOf({children: null});
+
+/**
+ * Sometimes you want to change the props of a child passed to you. Usually
+ * this is to add a CSS class.
+ *
+ * @param {object} child child component you'd like to clone
+ * @param {object} props props you'd like to modify. They will be merged
+ * as if you used `transferPropsTo()`.
+ * @return {object} a clone of child with props merged in.
+ */
+function cloneWithProps(child, props) {
+  if ("production" !== process.env.NODE_ENV) {
+    ("production" !== process.env.NODE_ENV ? warning(
+      !child.ref,
+      'You are calling cloneWithProps() on a child with a ref. This is ' +
+      'dangerous because you\'re creating a new child which will not be ' +
+      'added as a ref to its parent.'
+    ) : null);
+  }
+
+  var newProps = ReactPropTransferer.mergeProps(props, child.props);
+
+  // Use `child.props.children` if it is provided.
+  if (!newProps.hasOwnProperty(CHILDREN_PROP) &&
+      child.props.hasOwnProperty(CHILDREN_PROP)) {
+    newProps.children = child.props.children;
+  }
+
+  // The current API doesn't retain _owner and _context, which is why this
+  // doesn't use ReactElement.cloneAndReplaceProps.
+  return ReactElement.createElement(child.type, newProps);
+}
+
+module.exports = cloneWithProps;
+
+}).call(this,require('_process'))
+},{"./ReactElement":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/ReactElement.js","./ReactPropTransferer":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/ReactPropTransferer.js","./keyOf":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/keyOf.js","./warning":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/warning.js","_process":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/process/browser.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/lib/containsNode.js":[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.

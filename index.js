@@ -4,7 +4,7 @@ var app = express();
 var config = require('./config');
 var serveStatic = require('serve-static');
 var React = require('react');
-var fs = require('fs');
+var url = require('url');
 var request = require('request');
 
 app.use(express.static(path.join(__dirname, '/')));
@@ -46,11 +46,14 @@ app.route('/comment').post(function(req, res, next) {
 });
 
 // now we need to add browserify so the component and bindings are availble on the front end!
-app.route('/').get(function(req, res, next) {
+app.route('/*').get(function(req, res, next) {
     // var initialState = require('./comments.json'); // must fetch initial state and inject into App -- this is static on server start....
     request('http://localhost:3000/comments.json', function(error, response, body) {
+        var path = url.parse(req.url).pathname;
+        console.log('SERVER path: ' + path)
         var initialState = JSON.parse(body);
         var AppElement = React.createElement(App, {
+            path: path,
             initialState: initialState
         });
         var markup = React.renderToString(AppElement);
