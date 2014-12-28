@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
 var App = require('./app/App.js');
 
 
-app.route('/simple').get(function(req, res, next) {
+// app.route('/simple').get(function(req, res, next) {
     // var data = [{
     //     title: "Hello world",
     //     awesomness: "super-high"
@@ -30,11 +30,12 @@ app.route('/simple').get(function(req, res, next) {
     // });
     // var markup = React.renderToString(reactElement);
     // res.send(markup);
-});
+// });
 
 
-app.route('/comment').post(function(req, res, next) {
-    res.send('successfully recevied:' + JSON.stringify(req.body))
+// wanna be api call to post a new comment and save to .json file
+// app.route('/comment').post(function(req, res, next) {
+    // res.send('successfully recevied:' + JSON.stringify(req.body))
         // fs.appendFile("./comments.json", JSON.stringify(req.body), function(err) {
         //     if (err) {
         //         console.log(err);
@@ -42,57 +43,56 @@ app.route('/comment').post(function(req, res, next) {
         //         console.log("The file was saved!");
         //     }
         // });
-
-});
+// });
 
 // server side rendering complete.
-var FrontPage = require('./app/components/pages/FrontPage.js');
-var MapSearchPage = require('./app/components/pages/MapSearchPage');
-var IsoBegins = require('./app/components/pages/IsoBegins');
-var IsoBegins2 = require('./app/components/pages/IsoBegins2');
-var NotFoundPage = require('./app/components/pages/NotFound');
-var CommentsPage = require('./app/components/pages/CommentsPage');
+// var FrontPage = require('./app/pages/FrontPage.js');
+// var MapSearchPage = require('./app/pages/MapSearchPage');
+// var IsoBegins = require('./app/pages/IsoBegins');
+// var IsoBegins2 = require('./app/pages/IsoBegins2');
+// var NotFoundPage = require('./app/pages/NotFound');
+// var CommentsPage = require('./app/pages/CommentsPage');
 
-app.route('/server/:path').get(function(req, res, next) {
-    var path = req.params.path;
-    console.log('SERVER SIDE RENDERING');
-    var markup = '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">';
-    markup += 'SERVER-SIDE RENDERING -- Every time you navigate a page the browser will make a full HTTP request (same as typing in the new url directly or hitting refresh).';
-    markup += '<div><a class="btn btn-default" href="/server/frontpage">Frontpage!</a><a class="btn btn-default" href="/server/1">Go to page 1</a><a class="btn btn-default" href="/server/2">Go to page 2</a><a class="btn btn-default" href="/server/mapsearchpage">Map search now!</a><a class="btn btn-default" href="/server/comments-page">Go to page comments-page</a><a class="btn btn-default" href="/server/404">Go to page not found</a></div>';
-    markup += '<div><p><a href="/">Click to go back to the isomorphic app! just get rid of `server` from your /server/* urls</a></p></div>';
-    if (path == 'frontpage') {
-        var reactElement = React.createElement(FrontPage, {});
-    } else if (path == '1') {
-        var reactElement = React.createElement(IsoBegins, {});
-    } else if (path == '2') {
-        var reactElement = React.createElement(IsoBegins2, {});
-    } else if (path == 'mapsearchpage') {
-        var reactElement = React.createElement(MapSearchPage, {});
-    } else if (path == 'comments-page') {
-        var initialState = [{
-            "id": "1",
-            "author": "Fede Torre",
-            "text": "This is the first comment on the l!!!ist."
-        }, {
-            "id": "2",
-            "author": "Jordan Walk",
-            "text": "Things come and go."
-        }, {
-            "id": "3",
-            "author": "Fede Torre",
-            "text": "Hello world, isomorphic javascript app world. "
-        }];
-        var reactElement = React.createElement(CommentsPage, {
-            path: path,
-            initialState: initialState
-        });
-    } else {
-        var reactElement = React.createElement(NotFoundPage, {});
-    }
-    markup += React.renderToString(reactElement);
-    res.send(markup);
+// app.route('/server/:path').get(function(req, res, next) {
+//     var path = req.params.path;
+//     console.log('SERVER SIDE RENDERING');
+//     var markup = '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">';
+//     markup += 'SERVER-SIDE RENDERING -- Every time you navigate a page the browser will make a full HTTP request (same as typing in the new url directly or hitting refresh).';
+//     markup += '<div><a class="btn btn-default" href="/server/frontpage">Frontpage!</a><a class="btn btn-default" href="/server/1">Go to page 1</a><a class="btn btn-default" href="/server/2">Go to page 2</a><a class="btn btn-default" href="/server/mapsearchpage">Map search now!</a><a class="btn btn-default" href="/server/comments-page">Go to page comments-page</a><a class="btn btn-default" href="/server/404">Go to page not found</a></div>';
+//     markup += '<div><p><a href="/">Click to go back to the isomorphic app! just get rid of `server` from your /server/* urls</a></p></div>';
+//     if (path == 'frontpage') {
+//         var reactElement = React.createElement(FrontPage, {});
+//     } else if (path == '1') {
+//         var reactElement = React.createElement(IsoBegins, {});
+//     } else if (path == '2') {
+//         var reactElement = React.createElement(IsoBegins2, {});
+//     } else if (path == 'mapsearchpage') {
+//         var reactElement = React.createElement(MapSearchPage, {});
+//     } else if (path == 'comments-page') {
+//         var initialState = [{
+//             "id": "1",
+//             "author": "Fede Torre",
+//             "text": "This is the first comment on the l!!!ist."
+//         }, {
+//             "id": "2",
+//             "author": "Jordan Walk",
+//             "text": "Things come and go."
+//         }, {
+//             "id": "3",
+//             "author": "Fede Torre",
+//             "text": "Hello world, isomorphic javascript app world. "
+//         }];
+//         var reactElement = React.createElement(CommentsPage, {
+//             path: path,
+//             initialState: initialState
+//         });
+//     } else {
+//         var reactElement = React.createElement(NotFoundPage, {});
+//     }
+//     markup += React.renderToString(reactElement);
+//     res.send(markup);
 
-});
+// });
 
 
 // TO VISUALIZE CLIENT SIDE RENDERING, UNCOMMENT THIS LINE AND REFRESH COMMENTS PAGE
@@ -145,7 +145,7 @@ app.route('/*').get(function(req, res, next) {
     // --> All subsequent fetches will be rendered client side (how is performance on this. fine, right? thats the whole advantage of clientside apps....; you still have to load the data but its not a new full http request)
     // In the react app, initialState should only be passed/used by the initally loaded component.
 
-    request('https://hotpads-iso-react.herokuapp.com/comments.json', function(error, response, body) {
+    request('http://localhost:3000/comments.json', function(error, response, body) {
         var path = url.parse(req.url).pathname;
         console.log('ISO SERVER path: ' + path);
         var initialState = JSON.parse(body);

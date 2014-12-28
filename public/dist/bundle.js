@@ -10,14 +10,14 @@ var Locations = Router.Locations;
 var Location = Router.Location;
 var NotFound = Router.NotFound;
 
-var HeaderNav = require('./components/modules/HeaderNav'); // this would normally be loaded in by the page
+var HeaderNav = require('./modules/HeaderNav'); // this would normally be loaded in by the page
 // Load all pages
-var FrontPage = require('./components/pages/FrontPage');
-var MapSearchPage = require('./components/pages/MapSearchPage');
-var IsoBegins = require('./components/pages/IsoBegins');
-var IsoBegins2 = require('./components/pages/IsoBegins2');
-var NotFoundPage = require('./components/pages/NotFound');
-var CommentsPage = require('./components/pages/CommentsPage');
+var FrontPage = require('./pages/FrontPage');
+var MapSearchPage = require('./pages/MapSearchPage');
+var IsoBegins = require('./pages/IsoBegins');
+var IsoBegins2 = require('./pages/IsoBegins2');
+var NotFoundPage = require('./pages/NotFound');
+var CommentsPage = require('./pages/CommentsPage');
 
 
 if (typeof window !== 'undefined') {
@@ -34,6 +34,167 @@ if (typeof window !== 'undefined') {
         }), document);
     };
 }
+
+
+// FLUXXOR EXAMPLE TODO LIST
+// var Fluxxor = require('fluxxor');
+
+// var constants = {
+//     ADD_TODO: "ADD_TODO",
+//     TOGGLE_TODO: "TOGGLE_TODO",
+//     CLEAR_TODOS: "CLEAR_TODOS"
+// };
+
+// var TodoStore = Fluxxor.createStore({
+//     initialize: function() {
+//         this.todos = [];
+//         this.bindActions(
+//             constants.ADD_TODO, this.onAddTodo,
+//             constants.TOGGLE_TODO, this.onToggleTodo,
+//             constants.CLEAR_TODOS, this.onClearTodos
+//         );
+//     },
+//     onAddTodo: function(payload) {
+//         this.todos.push({
+//             text: payload.text,
+//             complete: false
+//         });
+//         this.emit("change");
+//     },
+//     onToggleTodo: function(payload) {
+//         payload.todo.complete = !payload.todo.complete;
+//         this.emit("change");
+//     },
+//     onClearTodos: function() {
+//         this.todos = this.todos.filter(function(todo) {
+//             return !todo.complete;
+//         });
+//         this.emit("change");
+//     },
+//     getState: function() {
+//         return {
+//             todos: this.todos
+//         };
+//     }
+// });
+
+// var actions = {
+//     addTodo: function(text) {
+//         this.dispatch(constants.ADD_TODO, {
+//             text: text
+//         });
+//     },
+
+//     toggleTodo: function(todo) {
+//         this.dispatch(constants.TOGGLE_TODO, {
+//             todo: todo
+//         });
+//     },
+
+//     clearTodos: function() {
+//         this.dispatch(constants.CLEAR_TODOS);
+//     }
+// };
+
+// var stores = {
+//     TodoStore: new TodoStore()
+// };
+
+// var flux = new Fluxxor.Flux(stores, actions);
+// var FluxMixin = Fluxxor.FluxMixin(React),
+// StoreWatchMixin = Fluxxor.StoreWatchMixin;
+// var Application = React.createClass({
+//     mixins: [FluxMixin, StoreWatchMixin("TodoStore")],
+
+//     getInitialState: function() {
+//         return {
+//             newTodoText: ""
+//         };
+//     },
+
+//     getStateFromFlux: function() {
+//         var flux = this.getFlux();
+//         // Our entire state is made up of the TodoStore data. In a larger
+//         // application, you will likely return data from multiple stores, e.g.:
+//         //
+//         //   return {
+//         //     todoData: flux.store("TodoStore").getState(),
+//         //     userData: flux.store("UserStore").getData(),
+//         //     fooBarData: flux.store("FooBarStore").someMoreData()
+//         //   };
+//         return flux.store("TodoStore").getState();
+//     },
+
+//     render: function() {
+//         return (
+//             React.DOM.div({
+//                     className: "div"
+//                     flux: flux
+//                 },
+//                 React.DOM.ul({
+//                         className: "test"
+//                     },
+//                     this.state.todos.map(function(todo, i) {
+//                         return
+//                         React.DOM.li({
+//                                 key: i
+//                             },
+//                             React.createElement(TodoItem, {
+//                                 todo: todo
+//                             })
+//                         )
+//                     })
+//                 ),
+//                 React.DOM.form({
+//                         onSubmit: this.onSubmitForm
+//                     },
+//                     React.DOM.input({
+//                         type: "text",
+//                         size: "30",
+//                         placeholder: "New Todo",
+//                         value: this.state.newTodoText,
+//                         onChange: this.handleTodoTextChange
+//                     }),
+//                     React.DOM.input({
+//                         type: "submit",
+//                         value: "Add Todo",
+//                     })
+//                 ),
+//                 React.DOM.button({
+//                     onClick: this.clearCompletedTodos
+//                 }, "Clear completed")
+//             )
+//         );
+//     },
+
+//     handleTodoTextChange: function(e) {
+//         this.setState({
+//             newTodoText: e.target.value
+//         });
+//     },
+
+//     onSubmitForm: function(e) {
+//         e.preventDefault();
+//         if (this.state.newTodoText.trim()) {
+//             this.getFlux().actions.addTodo(this.state.newTodoText);
+//             this.setState({
+//                 newTodoText: ""
+//             });
+//         }
+//     },
+
+//     clearCompletedTodos: function(e) {
+//         this.getFlux().actions.clearTodos();
+//     }
+// });
+
+// flux.on("dispatch", function(type, payload) {
+//     if (console && console.log) {
+//         console.log("[Dispatch]", type, payload);
+//     }
+// });
+
+
 
 var App = React.createClass({
     displayName: 'App',
@@ -61,7 +222,7 @@ var App = React.createClass({
                     React.createElement('p', {
                         className: 'envType'
                     }, 'ISOMORPHIC WEB APP --  Navigating to any page url directly (or hitting refresh) will serve it up with server-side rendering. After the initial load, all subsequent page loads are client rendered. The coolest part about it is that you resuse the same components/code on the server and client! Super efficient and scalable for a big team. #yay'),
-                   React.createElement('a', {
+                    React.createElement('a', {
                         href: '/server/frontpage'
                     }, 'Click to go to the server-side ONLY rendering application (/server/* for example /server/frontpage)'),
                     React.createElement(HeaderNav, {
@@ -112,7 +273,7 @@ var App = React.createClass({
 
 module.exports = App;
 
-},{"../config":"/Users/federicot/Dropbox/Projects/react-isomorph/config.js","./components/modules/HeaderNav":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/HeaderNav.js","./components/pages/CommentsPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/CommentsPage.js","./components/pages/FrontPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/FrontPage.js","./components/pages/IsoBegins":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/IsoBegins.js","./components/pages/IsoBegins2":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/IsoBegins2.js","./components/pages/MapSearchPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/MapSearchPage.js","./components/pages/NotFound":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/NotFound.js","jquery":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js","url":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/url/url.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/Comment.js":[function(require,module,exports){
+},{"../config":"/Users/federicot/Dropbox/Projects/react-isomorph/config.js","./modules/HeaderNav":"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/HeaderNav.js","./pages/CommentsPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/CommentsPage.js","./pages/FrontPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/FrontPage.js","./pages/IsoBegins":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/IsoBegins.js","./pages/IsoBegins2":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/IsoBegins2.js","./pages/MapSearchPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/MapSearchPage.js","./pages/NotFound":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/NotFound.js","jquery":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js","url":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/url/url.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/Comment.js":[function(require,module,exports){
 var React = require('react');
 
 
@@ -139,7 +300,7 @@ module.exports = Comment = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentBox.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/CommentBox.js":[function(require,module,exports){
 var React = require('react');
 var request = require('request');
 var CommentForm = require('./CommentForm');
@@ -221,7 +382,7 @@ module.exports = CommentBox = React.createClass({
     }
 });
 
-},{"./CommentForm":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentForm.js","./CommentList":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentList.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","request":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browser-request/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentForm.js":[function(require,module,exports){
+},{"./CommentForm":"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/CommentForm.js","./CommentList":"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/CommentList.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","request":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browser-request/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/CommentForm.js":[function(require,module,exports){
 var React = require('react');
 
 module.exports = CommentForm = React.createClass({
@@ -265,7 +426,7 @@ module.exports = CommentForm = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentList.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/CommentList.js":[function(require,module,exports){
 var React = require('react');
 var Comment = require('./Comment');
 
@@ -292,7 +453,7 @@ module.exports = CommentList = React.createClass({
     }
 });
 
-},{"./Comment":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/Comment.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/HeaderNav.js":[function(require,module,exports){
+},{"./Comment":"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/Comment.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/HeaderNav.js":[function(require,module,exports){
 var React = require('react');
 var Router = require('react-router-component');
 var Link = Router.Link;
@@ -334,7 +495,7 @@ module.exports = HeaderNav = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/CommentsPage.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/CommentsPage.js":[function(require,module,exports){
 var React = require('react');
 
 var CommentBox = require('../modules/CommentBox');
@@ -372,9 +533,8 @@ module.exports = CommentsPage = React.createClass({
     }
 });
 
-},{"../modules/CommentBox":"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/modules/CommentBox.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/FrontPage.js":[function(require,module,exports){
+},{"../modules/CommentBox":"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/CommentBox.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/FrontPage.js":[function(require,module,exports){
 var React = require('react');
-
 
 module.exports = FrontPage = React.createClass({
     displayName: 'FrontPage',
@@ -399,7 +559,7 @@ module.exports = FrontPage = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/IsoBegins.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/IsoBegins.js":[function(require,module,exports){
 var React = require('react');
 
 module.exports = IsoBegins = React.createClass({
@@ -418,7 +578,7 @@ module.exports = IsoBegins = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/IsoBegins2.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/IsoBegins2.js":[function(require,module,exports){
 var React = require('react');
 
 module.exports = IsoBegins2 = React.createClass({
@@ -434,7 +594,7 @@ module.exports = IsoBegins2 = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/MapSearchPage.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/MapSearchPage.js":[function(require,module,exports){
 var React = require('react');
 
 
@@ -461,7 +621,7 @@ module.exports = MapSearchPage = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/components/pages/NotFound.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/NotFound.js":[function(require,module,exports){
 var React = require('react');
 
 module.exports = NotFound = React.createClass({
@@ -495,7 +655,7 @@ module.exports = config = {
 
     app: {
         host: 'localhost',
-        port: 3000,
+        port: process.env.PORT || 3000,
         cdn: '',
         legacyIntegration: false
     },

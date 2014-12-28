@@ -9,14 +9,14 @@ var Locations = Router.Locations;
 var Location = Router.Location;
 var NotFound = Router.NotFound;
 
-var HeaderNav = require('./components/modules/HeaderNav'); // this would normally be loaded in by the page
+var HeaderNav = require('./modules/HeaderNav'); // this would normally be loaded in by the page
 // Load all pages
-var FrontPage = require('./components/pages/FrontPage');
-var MapSearchPage = require('./components/pages/MapSearchPage');
-var IsoBegins = require('./components/pages/IsoBegins');
-var IsoBegins2 = require('./components/pages/IsoBegins2');
-var NotFoundPage = require('./components/pages/NotFound');
-var CommentsPage = require('./components/pages/CommentsPage');
+var FrontPage = require('./pages/FrontPage');
+var MapSearchPage = require('./pages/MapSearchPage');
+var IsoBegins = require('./pages/IsoBegins');
+var IsoBegins2 = require('./pages/IsoBegins2');
+var NotFoundPage = require('./pages/NotFound');
+var CommentsPage = require('./pages/CommentsPage');
 
 
 if (typeof window !== 'undefined') {
@@ -33,6 +33,167 @@ if (typeof window !== 'undefined') {
         }), document);
     };
 }
+
+
+// FLUXXOR EXAMPLE TODO LIST
+// var Fluxxor = require('fluxxor');
+
+// var constants = {
+//     ADD_TODO: "ADD_TODO",
+//     TOGGLE_TODO: "TOGGLE_TODO",
+//     CLEAR_TODOS: "CLEAR_TODOS"
+// };
+
+// var TodoStore = Fluxxor.createStore({
+//     initialize: function() {
+//         this.todos = [];
+//         this.bindActions(
+//             constants.ADD_TODO, this.onAddTodo,
+//             constants.TOGGLE_TODO, this.onToggleTodo,
+//             constants.CLEAR_TODOS, this.onClearTodos
+//         );
+//     },
+//     onAddTodo: function(payload) {
+//         this.todos.push({
+//             text: payload.text,
+//             complete: false
+//         });
+//         this.emit("change");
+//     },
+//     onToggleTodo: function(payload) {
+//         payload.todo.complete = !payload.todo.complete;
+//         this.emit("change");
+//     },
+//     onClearTodos: function() {
+//         this.todos = this.todos.filter(function(todo) {
+//             return !todo.complete;
+//         });
+//         this.emit("change");
+//     },
+//     getState: function() {
+//         return {
+//             todos: this.todos
+//         };
+//     }
+// });
+
+// var actions = {
+//     addTodo: function(text) {
+//         this.dispatch(constants.ADD_TODO, {
+//             text: text
+//         });
+//     },
+
+//     toggleTodo: function(todo) {
+//         this.dispatch(constants.TOGGLE_TODO, {
+//             todo: todo
+//         });
+//     },
+
+//     clearTodos: function() {
+//         this.dispatch(constants.CLEAR_TODOS);
+//     }
+// };
+
+// var stores = {
+//     TodoStore: new TodoStore()
+// };
+
+// var flux = new Fluxxor.Flux(stores, actions);
+// var FluxMixin = Fluxxor.FluxMixin(React),
+// StoreWatchMixin = Fluxxor.StoreWatchMixin;
+// var Application = React.createClass({
+//     mixins: [FluxMixin, StoreWatchMixin("TodoStore")],
+
+//     getInitialState: function() {
+//         return {
+//             newTodoText: ""
+//         };
+//     },
+
+//     getStateFromFlux: function() {
+//         var flux = this.getFlux();
+//         // Our entire state is made up of the TodoStore data. In a larger
+//         // application, you will likely return data from multiple stores, e.g.:
+//         //
+//         //   return {
+//         //     todoData: flux.store("TodoStore").getState(),
+//         //     userData: flux.store("UserStore").getData(),
+//         //     fooBarData: flux.store("FooBarStore").someMoreData()
+//         //   };
+//         return flux.store("TodoStore").getState();
+//     },
+
+//     render: function() {
+//         return (
+//             React.DOM.div({
+//                     className: "div"
+//                     flux: flux
+//                 },
+//                 React.DOM.ul({
+//                         className: "test"
+//                     },
+//                     this.state.todos.map(function(todo, i) {
+//                         return
+//                         React.DOM.li({
+//                                 key: i
+//                             },
+//                             React.createElement(TodoItem, {
+//                                 todo: todo
+//                             })
+//                         )
+//                     })
+//                 ),
+//                 React.DOM.form({
+//                         onSubmit: this.onSubmitForm
+//                     },
+//                     React.DOM.input({
+//                         type: "text",
+//                         size: "30",
+//                         placeholder: "New Todo",
+//                         value: this.state.newTodoText,
+//                         onChange: this.handleTodoTextChange
+//                     }),
+//                     React.DOM.input({
+//                         type: "submit",
+//                         value: "Add Todo",
+//                     })
+//                 ),
+//                 React.DOM.button({
+//                     onClick: this.clearCompletedTodos
+//                 }, "Clear completed")
+//             )
+//         );
+//     },
+
+//     handleTodoTextChange: function(e) {
+//         this.setState({
+//             newTodoText: e.target.value
+//         });
+//     },
+
+//     onSubmitForm: function(e) {
+//         e.preventDefault();
+//         if (this.state.newTodoText.trim()) {
+//             this.getFlux().actions.addTodo(this.state.newTodoText);
+//             this.setState({
+//                 newTodoText: ""
+//             });
+//         }
+//     },
+
+//     clearCompletedTodos: function(e) {
+//         this.getFlux().actions.clearTodos();
+//     }
+// });
+
+// flux.on("dispatch", function(type, payload) {
+//     if (console && console.log) {
+//         console.log("[Dispatch]", type, payload);
+//     }
+// });
+
+
 
 var App = React.createClass({
     displayName: 'App',
@@ -60,7 +221,7 @@ var App = React.createClass({
                     React.createElement('p', {
                         className: 'envType'
                     }, 'ISOMORPHIC WEB APP --  Navigating to any page url directly (or hitting refresh) will serve it up with server-side rendering. After the initial load, all subsequent page loads are client rendered. The coolest part about it is that you resuse the same components/code on the server and client! Super efficient and scalable for a big team. #yay'),
-                   React.createElement('a', {
+                    React.createElement('a', {
                         href: '/server/frontpage'
                     }, 'Click to go to the server-side ONLY rendering application (/server/* for example /server/frontpage)'),
                     React.createElement(HeaderNav, {
