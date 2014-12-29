@@ -15,34 +15,35 @@ app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
 }));
 
 var App = require('./app/App.js');
+var Fluxxor = require('fluxxor');
 
 
 // app.route('/simple').get(function(req, res, next) {
-    // var data = [{
-    //     title: "Hello world",
-    //     awesomness: "super-high"
-    // }, {
-    //     title: "Hello world encore",
-    //     awesomness: "super-high"
-    // }]
-    // var reactElement = React.createElement(App.IsoBegins, {
-    //     data: data
-    // });
-    // var markup = React.renderToString(reactElement);
-    // res.send(markup);
+// var data = [{
+//     title: "Hello world",
+//     awesomness: "super-high"
+// }, {
+//     title: "Hello world encore",
+//     awesomness: "super-high"
+// }]
+// var reactElement = React.createElement(App.IsoBegins, {
+//     data: data
+// });
+// var markup = React.renderToString(reactElement);
+// res.send(markup);
 // });
 
 
 // wanna be api call to post a new comment and save to .json file
 // app.route('/comment').post(function(req, res, next) {
-    // res.send('successfully recevied:' + JSON.stringify(req.body))
-        // fs.appendFile("./comments.json", JSON.stringify(req.body), function(err) {
-        //     if (err) {
-        //         console.log(err);
-        //     } else {
-        //         console.log("The file was saved!");
-        //     }
-        // });
+// res.send('successfully recevied:' + JSON.stringify(req.body))
+// fs.appendFile("./comments.json", JSON.stringify(req.body), function(err) {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log("The file was saved!");
+//     }
+// });
 // });
 
 // server side rendering complete.
@@ -149,12 +150,86 @@ app.route('/*').get(function(req, res, next) {
         var path = url.parse(req.url).pathname;
         console.log('ISO SERVER path: ' + path);
         var initialState = JSON.parse(body);
+
+
+
+        var constants = {
+            ADD_TODO: "ADD_TODO",
+            TOGGLE_TODO: "TOGGLE_TODO",
+            CLEAR_TODOS: "CLEAR_TODOS"
+        };
+
+        var TodoStore = Fluxxor.createStore({
+            initialize: function() {
+                this.todos = [];
+                this.bindActions(
+                    constants.ADD_TODO, this.onAddTodo,
+                    constants.TOGGLE_TODO, this.onToggleTodo,
+                    constants.CLEAR_TODOS, this.onClearTodos
+                );
+            },
+            onAddTodo: function(payload) {
+                this.todos.push({
+                    text: payload.text,
+                    complete: false
+                });
+                this.emit("change");
+            },
+            onToggleTodo: function(payload) {
+                payload.todo.complete = !payload.todo.complete;
+                this.emit("change");
+            },
+            onClearTodos: function() {
+                this.todos = this.todos.filter(function(todo) {
+                    return !todo.complete;
+                });
+                this.emit("change");
+            },
+            getState: function() {
+                return {
+                    todos: this.todos
+                };
+            }
+        });
+
+        var actions = {
+            addTodo: function(text) {
+                this.dispatch(constants.ADD_TODO, {
+                    text: text
+                });
+            },
+
+            toggleTodo: function(todo) {
+                this.dispatch(constants.TOGGLE_TODO, {
+                    todo: todo
+                });
+            },
+
+            clearTodos: function() {
+                this.dispatch(constants.CLEAR_TODOS);
+            }
+        };
+
+        var stores = {
+            TodoStore: new TodoStore()
+        };
+
+        var flux = new Fluxxor.Flux(stores, actions);
+        flux.on("dispatch", function(type, payload) {
+            if (console && console.log) {
+                console.log("[SERVER Dispatch]", type, payload);
+            }
+        });
+
         var AppElement = React.createElement(App, {
+            flux: flux,
             path: path,
             initialState: initialState
         });
-        var markup = React.renderToString(AppElement);
+        // var markup = React.renderToString(AppElement);
+        var markup = "";
         markup += '<script id="initial-state" type="application/json">' + JSON.stringify(initialState) + '</script>';
+        markup += '<script type="text/javascript" src="/public/dist/bundle.js"></script>';
         res.send(markup);
     });
 
