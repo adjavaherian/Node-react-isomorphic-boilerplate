@@ -17,102 +17,8 @@ app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
 var App = require('./app/App.js');
 var Fluxxor = require('fluxxor');
 var constants = require('./app/constants');
+var actions = require('./app/actions');
 var TodoStore = require('./app/stores/TodoStore');
-
-// app.route('/simple').get(function(req, res, next) {
-// var data = [{
-//     title: "Hello world",
-//     awesomness: "super-high"
-// }, {
-//     title: "Hello world encore",
-//     awesomness: "super-high"
-// }]
-// var reactElement = React.createElement(App.IsoBegins, {
-//     data: data
-// });
-// var markup = React.renderToString(reactElement);
-// res.send(markup);
-// });
-
-
-// wanna be api call to post a new comment and save to .json file
-// app.route('/comment').post(function(req, res, next) {
-// res.send('successfully recevied:' + JSON.stringify(req.body))
-// fs.appendFile("./comments.json", JSON.stringify(req.body), function(err) {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log("The file was saved!");
-//     }
-// });
-// });
-
-// server side rendering complete.
-// var FrontPage = require('./app/pages/FrontPage.js');
-// var MapSearchPage = require('./app/pages/MapSearchPage');
-// var IsoBegins = require('./app/pages/IsoBegins');
-// var IsoBegins2 = require('./app/pages/IsoBegins2');
-// var NotFoundPage = require('./app/pages/NotFound');
-// var CommentsPage = require('./app/pages/CommentsPage');
-
-// app.route('/server/:path').get(function(req, res, next) {
-//     var path = req.params.path;
-//     console.log('SERVER SIDE RENDERING');
-//     var markup = '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">';
-//     markup += 'SERVER-SIDE RENDERING -- Every time you navigate a page the browser will make a full HTTP request (same as typing in the new url directly or hitting refresh).';
-//     markup += '<div><a class="btn btn-default" href="/server/frontpage">Frontpage!</a><a class="btn btn-default" href="/server/1">Go to page 1</a><a class="btn btn-default" href="/server/2">Go to page 2</a><a class="btn btn-default" href="/server/mapsearchpage">Map search now!</a><a class="btn btn-default" href="/server/comments-page">Go to page comments-page</a><a class="btn btn-default" href="/server/404">Go to page not found</a></div>';
-//     markup += '<div><p><a href="/">Click to go back to the isomorphic app! just get rid of `server` from your /server/* urls</a></p></div>';
-//     if (path == 'frontpage') {
-//         var reactElement = React.createElement(FrontPage, {});
-//     } else if (path == '1') {
-//         var reactElement = React.createElement(IsoBegins, {});
-//     } else if (path == '2') {
-//         var reactElement = React.createElement(IsoBegins2, {});
-//     } else if (path == 'mapsearchpage') {
-//         var reactElement = React.createElement(MapSearchPage, {});
-//     } else if (path == 'comments-page') {
-//         var initialState = [{
-//             "id": "1",
-//             "author": "Fede Torre",
-//             "text": "This is the first comment on the l!!!ist."
-//         }, {
-//             "id": "2",
-//             "author": "Jordan Walk",
-//             "text": "Things come and go."
-//         }, {
-//             "id": "3",
-//             "author": "Fede Torre",
-//             "text": "Hello world, isomorphic javascript app world. "
-//         }];
-//         var reactElement = React.createElement(CommentsPage, {
-//             path: path,
-//             initialState: initialState
-//         });
-//     } else {
-//         var reactElement = React.createElement(NotFoundPage, {});
-//     }
-//     markup += React.renderToString(reactElement);
-//     res.send(markup);
-
-// });
-
-
-// TO VISUALIZE CLIENT SIDE RENDERING, UNCOMMENT THIS LINE AND REFRESH COMMENTS PAGE
-// Could be made more smooth by adding placeholders/loading spinners
-// Our Isomorphic app will experience this on page changes, but This is easier/better (when made smooth) than a full new http request
-// app.route('/comments-page').get(function(req, res, next) {
-//     var path = url.parse(req.url).pathname;
-//     console.log('CLIENT-SIDE RENDERING path: ' + path); // load client then click on comments
-//     var AppElement = React.createElement(App, {
-//         path: 'comments-page',
-//         initialState: [] // initialState is not passed (initial comments will be fetched from front-end)
-//     });
-
-//     var markup = React.renderToString(AppElement);
-//     markup += '<script id="initial-state" type="application/json">[]</script>';
-//     res.send(markup);
-// });
-
 
 app.route('/*').get(function(req, res, next) {
     // all requests will be routed through react app; both server and client side stuffs
@@ -152,74 +58,22 @@ app.route('/*').get(function(req, res, next) {
         console.log('ISO SERVER path: ' + path);
         var initialState = JSON.parse(body);
 
-        
-
-        var TodoStore = Fluxxor.createStore({
-            initialize: function() {
-                this.todos = [{"text":"asdfasdf","complete":false},{"text":"asdfasdf","complete":false},{"text":"333","complete":false}];
-                this.bindActions(
-                    constants.ADD_TODO, this.onAddTodo,
-                    constants.TOGGLE_TODO, this.onToggleTodo,
-                    constants.CLEAR_TODOS, this.onClearTodos
-                );
-            },
-            onAddTodo: function(payload) {
-                this.todos.push({
-                    text: payload.text,
-                    complete: false
-                });
-                this.emit("change");
-            },
-            onToggleTodo: function(payload) {
-                payload.todo.complete = !payload.todo.complete;
-                this.emit("change");
-            },
-            onClearTodos: function() {
-                this.todos = this.todos.filter(function(todo) {
-                    return !todo.complete;
-                });
-                this.emit("change");
-            },
-            getState: function() {
-                return {
-                    todos: this.todos
-                };
-            }
-        });
-
-        var actions = {
-            addTodo: function(text) {
-                this.dispatch(constants.ADD_TODO, {
-                    text: text
-                });
-            },
-
-            toggleTodo: function(todo) {
-                this.dispatch(constants.TOGGLE_TODO, {
-                    todo: todo
-                });
-            },
-
-            clearTodos: function() {
-                this.dispatch(constants.CLEAR_TODOS);
-            }
-        };
-
         var stores = {
             TodoStore: new TodoStore()
         };
 
         var flux = new Fluxxor.Flux(stores, actions);
-        flux.on("dispatch", function(type, payload) {
-            if (console && console.log) {
-                console.log("[SERVER Dispatch]", type, payload);
-            }
-        });
-
+        // dispatcher on server is static; it will never be called. we just use it on
+        // the server to render the necessary content!
+        // flux.on("dispatch", function(type, payload) {
+        // if (console && console.log) {
+        // console.log("[SERVER Dispatch]", type, payload);
+        // }
+        // });
         var AppElement = React.createElement(App, {
             flux: flux,
             path: path
-            // initialState: initialState
+                // initialState: initialState
         });
         var markup = React.renderToString(AppElement);
         // var markup = "";
@@ -229,11 +83,6 @@ app.route('/*').get(function(req, res, next) {
     });
 
 });
-
-
-
-
-
 
 
 app.listen(config.app.port);
