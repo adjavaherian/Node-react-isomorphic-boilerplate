@@ -19,7 +19,9 @@ var IsoBegins2 = require('./pages/IsoBegins2');
 var NotFoundPage = require('./pages/NotFound');
 var CommentsPage = require('./pages/CommentsPage');
 var Fluxxor = require('fluxxor');
-
+var constants = require('./constants');
+var TodoStore = require('./stores/TodoStore');
+var actions = require('./actions');
 
 if (typeof window !== 'undefined') {
     // trigger render to bind UI to application on front end
@@ -27,68 +29,7 @@ if (typeof window !== 'undefined') {
         console.log('CLIENT-ONLY CODE; re-render on load to initialize UI elements and all')
         var path = url.parse(document.URL).pathname;
         console.log('CLIENT path: ' + path) // ONLY COMPONENTS ON THIS PAGE SHOULD RECEIVE INITIAL STATE DATA
-        var initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
-        // pass initial state into app on client side render
-
-
-        var constants = {
-            ADD_TODO: "ADD_TODO",
-            TOGGLE_TODO: "TOGGLE_TODO",
-            CLEAR_TODOS: "CLEAR_TODOS"
-        };
-
-        var TodoStore = Fluxxor.createStore({
-            initialize: function() {
-                this.todos = [];
-                // BIND actions that this store can take to dispatcher actions
-                this.bindActions(
-                    constants.ADD_TODO, this.onAddTodo,
-                    constants.TOGGLE_TODO, this.onToggleTodo,
-                    constants.CLEAR_TODOS, this.onClearTodos
-                );
-            },
-            onAddTodo: function(payload) {
-                this.todos.push({
-                    text: payload.text,
-                    complete: false
-                });
-                this.emit("change");
-            },
-            onToggleTodo: function(payload) {
-                payload.todo.complete = !payload.todo.complete;
-                this.emit("change");
-            },
-            onClearTodos: function() {
-                this.todos = this.todos.filter(function(todo) {
-                    return !todo.complete;
-                });
-                this.emit("change");
-            },
-            getState: function() {
-                return {
-                    todos: this.todos
-                };
-            }
-        });
-
-        // dispatcher actions, includes actions for ALL stores.
-        var actions = {
-            addTodo: function(text) {
-                this.dispatch(constants.ADD_TODO, {
-                    text: text
-                });
-            },
-
-            toggleTodo: function(todo) {
-                this.dispatch(constants.TOGGLE_TODO, {
-                    todo: todo
-                });
-            },
-
-            clearTodos: function() {
-                this.dispatch(constants.CLEAR_TODOS);
-            }
-        };
+        // var initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
 
         var stores = {
             TodoStore: new TodoStore()
@@ -101,34 +42,17 @@ if (typeof window !== 'undefined') {
             }
         });
 
+        // re-render on client side with same information to bind UI actions!
         React.render(React.createElement(App, {
             flux: flux,
-            path: path,
-            initialState: initialState // ONLY COMPONENTS ON THIS PATH SHOULD RECEIVE INITIAL STATE DATA
+            path: path
+            // initialState: initialState // ONLY COMPONENTS ON THIS PATH SHOULD RECEIVE INITIAL STATE DATA
         }), document.body);
     };
 }
 
 
-var TodoItem = React.createClass({
-    displayName: 'TodoItem',
-    getInitialState: function() { //called automatically once, executes once only
-        return {
-            data: this.props.text
-        };
-    },
-    render: function() {
-        return React.DOM.div({
-            className: 'TodoItem' // this is literally the html class name
-        }, this.props.text)
-    }
-});
-
-
-
 // FLUXXOR EXAMPLE TODO LIST
-
-
 var FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
@@ -163,13 +87,14 @@ var App = React.createClass({
                         className: "test"
                     },
                     this.state.todos.map(function(todo, i) {
-                        return
-                        React.DOM.li({
-                                key: i
-                            },
-                            React.createElement("div", {
-                                todo: todo
-                            }, todo.text + " | " + todo.completed)
+                        return (
+                            React.DOM.li({
+                                    key: i
+                                },
+                                React.createElement("div", {
+                                    todo: todo // you can pass any particular data to this component!
+                                }, todo.text + " | " + todo.complete)
+                            )
                         )
                     })
                 ),
@@ -215,9 +140,6 @@ var App = React.createClass({
         this.getFlux().actions.clearTodos();
     }
 });
-
-
-
 
 
 var App = App;
@@ -299,7 +221,39 @@ var App = App;
 
 module.exports = App;
 
-},{"../config":"/Users/federicot/Dropbox/Projects/react-isomorph/config.js","./modules/HeaderNav":"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/HeaderNav.js","./pages/CommentsPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/CommentsPage.js","./pages/FrontPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/FrontPage.js","./pages/IsoBegins":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/IsoBegins.js","./pages/IsoBegins2":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/IsoBegins2.js","./pages/MapSearchPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/MapSearchPage.js","./pages/NotFound":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/NotFound.js","fluxxor":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/fluxxor/index.js","jquery":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js","url":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/url/url.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/Comment.js":[function(require,module,exports){
+},{"../config":"/Users/federicot/Dropbox/Projects/react-isomorph/config.js","./actions":"/Users/federicot/Dropbox/Projects/react-isomorph/app/actions.js","./constants":"/Users/federicot/Dropbox/Projects/react-isomorph/app/constants.js","./modules/HeaderNav":"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/HeaderNav.js","./pages/CommentsPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/CommentsPage.js","./pages/FrontPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/FrontPage.js","./pages/IsoBegins":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/IsoBegins.js","./pages/IsoBegins2":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/IsoBegins2.js","./pages/MapSearchPage":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/MapSearchPage.js","./pages/NotFound":"/Users/federicot/Dropbox/Projects/react-isomorph/app/pages/NotFound.js","./stores/TodoStore":"/Users/federicot/Dropbox/Projects/react-isomorph/app/stores/TodoStore.js","fluxxor":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/fluxxor/index.js","jquery":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/jquery/dist/jquery.js","react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js","react-router-component":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react-router-component/index.js","url":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/browserify/node_modules/url/url.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/actions.js":[function(require,module,exports){
+// dispatcher actions, includes actions for ALL stores.
+var constants = require('./constants');
+
+var actions = {
+    addTodo: function(text) {
+        this.dispatch(constants.ADD_TODO, {
+            text: text
+        });
+    },
+    toggleTodo: function(todo) {
+        this.dispatch(constants.TOGGLE_TODO, {
+            todo: todo
+        });
+    },
+
+    clearTodos: function() {
+        this.dispatch(constants.CLEAR_TODOS);
+    }
+};
+
+module.exports = actions;
+
+},{"./constants":"/Users/federicot/Dropbox/Projects/react-isomorph/app/constants.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/constants.js":[function(require,module,exports){
+var constants = {
+    ADD_TODO: "ADD_TODO",
+    TOGGLE_TODO: "TOGGLE_TODO",
+    CLEAR_TODOS: "CLEAR_TODOS"
+};
+
+module.exports = constants;
+
+},{}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/modules/Comment.js":[function(require,module,exports){
 var React = require('react');
 
 
@@ -671,7 +625,55 @@ module.exports = NotFound = React.createClass({
     }
 });
 
-},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/config.js":[function(require,module,exports){
+},{"react":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/react/react.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/app/stores/TodoStore.js":[function(require,module,exports){
+var Fluxxor = require('fluxxor');
+var constants = require('../constants');
+
+module.exports = TodoStore = Fluxxor.createStore({
+    initialize: function() {
+        // fetch initial data here!
+        this.todos = [{
+            'text': 'asdfasdf',
+            'complete': false
+        }, {
+            'text': 'asdfasdf',
+            'complete': false
+        }, {
+            'text': '333',
+            'complete': false
+        }];
+        // BIND actions that this store can take to dispatcher actions
+        this.bindActions(
+            constants.ADD_TODO, this.onAddTodo,
+            constants.TOGGLE_TODO, this.onToggleTodo,
+            constants.CLEAR_TODOS, this.onClearTodos
+        );
+    },
+    onAddTodo: function(payload) {
+        this.todos.push({
+            text: payload.text,
+            complete: false
+        });
+        this.emit('change');
+    },
+    onToggleTodo: function(payload) {
+        payload.todo.complete = !payload.todo.complete;
+        this.emit('change');
+    },
+    onClearTodos: function() {
+        this.todos = this.todos.filter(function(todo) {
+            return !todo.complete;
+        });
+        this.emit('change');
+    },
+    getState: function() {
+        return {
+            todos: this.todos
+        };
+    }
+});
+
+},{"../constants":"/Users/federicot/Dropbox/Projects/react-isomorph/app/constants.js","fluxxor":"/Users/federicot/Dropbox/Projects/react-isomorph/node_modules/fluxxor/index.js"}],"/Users/federicot/Dropbox/Projects/react-isomorph/config.js":[function(require,module,exports){
 (function (process,__dirname){
 var path = require('path');
 module.exports = config = {

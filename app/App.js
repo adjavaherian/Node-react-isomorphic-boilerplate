@@ -18,7 +18,9 @@ var IsoBegins2 = require('./pages/IsoBegins2');
 var NotFoundPage = require('./pages/NotFound');
 var CommentsPage = require('./pages/CommentsPage');
 var Fluxxor = require('fluxxor');
-
+var constants = require('./constants');
+var TodoStore = require('./stores/TodoStore');
+var actions = require('./actions');
 
 if (typeof window !== 'undefined') {
     // trigger render to bind UI to application on front end
@@ -26,68 +28,7 @@ if (typeof window !== 'undefined') {
         console.log('CLIENT-ONLY CODE; re-render on load to initialize UI elements and all')
         var path = url.parse(document.URL).pathname;
         console.log('CLIENT path: ' + path) // ONLY COMPONENTS ON THIS PAGE SHOULD RECEIVE INITIAL STATE DATA
-        var initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
-        // pass initial state into app on client side render
-
-
-        var constants = {
-            ADD_TODO: "ADD_TODO",
-            TOGGLE_TODO: "TOGGLE_TODO",
-            CLEAR_TODOS: "CLEAR_TODOS"
-        };
-
-        var TodoStore = Fluxxor.createStore({
-            initialize: function() {
-                this.todos = [];
-                // BIND actions that this store can take to dispatcher actions
-                this.bindActions(
-                    constants.ADD_TODO, this.onAddTodo,
-                    constants.TOGGLE_TODO, this.onToggleTodo,
-                    constants.CLEAR_TODOS, this.onClearTodos
-                );
-            },
-            onAddTodo: function(payload) {
-                this.todos.push({
-                    text: payload.text,
-                    complete: false
-                });
-                this.emit("change");
-            },
-            onToggleTodo: function(payload) {
-                payload.todo.complete = !payload.todo.complete;
-                this.emit("change");
-            },
-            onClearTodos: function() {
-                this.todos = this.todos.filter(function(todo) {
-                    return !todo.complete;
-                });
-                this.emit("change");
-            },
-            getState: function() {
-                return {
-                    todos: this.todos
-                };
-            }
-        });
-
-        // dispatcher actions, includes actions for ALL stores.
-        var actions = {
-            addTodo: function(text) {
-                this.dispatch(constants.ADD_TODO, {
-                    text: text
-                });
-            },
-
-            toggleTodo: function(todo) {
-                this.dispatch(constants.TOGGLE_TODO, {
-                    todo: todo
-                });
-            },
-
-            clearTodos: function() {
-                this.dispatch(constants.CLEAR_TODOS);
-            }
-        };
+        // var initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
 
         var stores = {
             TodoStore: new TodoStore()
@@ -100,34 +41,17 @@ if (typeof window !== 'undefined') {
             }
         });
 
+        // re-render on client side with same information to bind UI actions!
         React.render(React.createElement(App, {
             flux: flux,
-            path: path,
-            initialState: initialState // ONLY COMPONENTS ON THIS PATH SHOULD RECEIVE INITIAL STATE DATA
+            path: path
+            // initialState: initialState // ONLY COMPONENTS ON THIS PATH SHOULD RECEIVE INITIAL STATE DATA
         }), document.body);
     };
 }
 
 
-var TodoItem = React.createClass({
-    displayName: 'TodoItem',
-    getInitialState: function() { //called automatically once, executes once only
-        return {
-            data: this.props.text
-        };
-    },
-    render: function() {
-        return React.DOM.div({
-            className: 'TodoItem' // this is literally the html class name
-        }, this.props.text)
-    }
-});
-
-
-
 // FLUXXOR EXAMPLE TODO LIST
-
-
 var FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
@@ -162,13 +86,14 @@ var App = React.createClass({
                         className: "test"
                     },
                     this.state.todos.map(function(todo, i) {
-                        return
-                        React.DOM.li({
-                                key: i
-                            },
-                            React.createElement("div", {
-                                todo: todo
-                            }, todo.text + " | " + todo.completed)
+                        return (
+                            React.DOM.li({
+                                    key: i
+                                },
+                                React.createElement("div", {
+                                    todo: todo // you can pass any particular data to this component!
+                                }, todo.text + " | " + todo.complete)
+                            )
                         )
                     })
                 ),
@@ -214,9 +139,6 @@ var App = React.createClass({
         this.getFlux().actions.clearTodos();
     }
 });
-
-
-
 
 
 var App = App;

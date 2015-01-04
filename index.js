@@ -16,7 +16,8 @@ app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
 
 var App = require('./app/App.js');
 var Fluxxor = require('fluxxor');
-
+var constants = require('./app/constants');
+var TodoStore = require('./app/stores/TodoStore');
 
 // app.route('/simple').get(function(req, res, next) {
 // var data = [{
@@ -151,17 +152,11 @@ app.route('/*').get(function(req, res, next) {
         console.log('ISO SERVER path: ' + path);
         var initialState = JSON.parse(body);
 
-
-
-        var constants = {
-            ADD_TODO: "ADD_TODO",
-            TOGGLE_TODO: "TOGGLE_TODO",
-            CLEAR_TODOS: "CLEAR_TODOS"
-        };
+        
 
         var TodoStore = Fluxxor.createStore({
             initialize: function() {
-                this.todos = [];
+                this.todos = [{"text":"asdfasdf","complete":false},{"text":"asdfasdf","complete":false},{"text":"333","complete":false}];
                 this.bindActions(
                     constants.ADD_TODO, this.onAddTodo,
                     constants.TOGGLE_TODO, this.onToggleTodo,
@@ -223,11 +218,11 @@ app.route('/*').get(function(req, res, next) {
 
         var AppElement = React.createElement(App, {
             flux: flux,
-            path: path,
-            initialState: initialState
+            path: path
+            // initialState: initialState
         });
-        // var markup = React.renderToString(AppElement);
-        var markup = "";
+        var markup = React.renderToString(AppElement);
+        // var markup = "";
         markup += '<script id="initial-state" type="application/json">' + JSON.stringify(initialState) + '</script>';
         markup += '<script type="text/javascript" src="/public/dist/bundle.js"></script>';
         res.send(markup);
