@@ -61,7 +61,7 @@ module.exports = CommentBox = React.createClass({
     },
     componentDidMount: function() { // called automatically when the component is mounted
         this.loadCommentsFromServer(); // client side stuff; we do getInitialState on the server!
-        setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+        // setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
     render: function() {
         return React.DOM.div({

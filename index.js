@@ -19,6 +19,9 @@ var Fluxxor = require('fluxxor');
 var constants = require('./app/constants');
 var actions = require('./app/actions');
 var TodoStore = require('./app/stores/TodoStore');
+var CommentStore = require('./app/stores/CommentStore');
+
+
 
 app.route('/*').get(function(req, res, next) {
     // all requests will be routed through react app; both server and client side stuffs
@@ -53,34 +56,35 @@ app.route('/*').get(function(req, res, next) {
     // --> All subsequent fetches will be rendered client side (how is performance on this. fine, right? thats the whole advantage of clientside apps....; you still have to load the data but its not a new full http request)
     // In the react app, initialState should only be passed/used by the initally loaded component.
 
-    request('http://localhost:3000/comments.json', function(error, response, body) {
-        var path = url.parse(req.url).pathname;
-        console.log('ISO SERVER path: ' + path);
-        var initialState = JSON.parse(body);
+    var path = url.parse(req.url).pathname;
+    console.log('ISO SERVER path: ' + path);
+    // we need to send all the stores the application will use
+    // however, only the one relevant to the path should be populated?
+    var stores = {
+        CommentStore: new CommentStore(),
+        TodoStore: new TodoStore()
+    };
 
-        var stores = {
-            TodoStore: new TodoStore()
-        };
+    var flux = new Fluxxor.Flux(stores, actions);
+    // dispatcher on server is static; it will never be called. we just use it on
+    // the server to render the necessary content!
+    // flux.on("dispatch", function(type, payload) {
+    // if (console && console.log) {
+    // console.log("[SERVER Dispatch]", type, payload);
+    // }
+    // });
 
-        var flux = new Fluxxor.Flux(stores, actions);
-        // dispatcher on server is static; it will never be called. we just use it on
-        // the server to render the necessary content!
-        // flux.on("dispatch", function(type, payload) {
-        // if (console && console.log) {
-        // console.log("[SERVER Dispatch]", type, payload);
-        // }
-        // });
-        var AppElement = React.createElement(App, {
-            flux: flux,
-            path: path
-                // initialState: initialState
-        });
-        var markup = React.renderToString(AppElement);
-        // var markup = "";
-        markup += '<script id="initial-state" type="application/json">' + JSON.stringify(initialState) + '</script>';
-        markup += '<script type="text/javascript" src="/public/dist/bundle.js"></script>';
-        res.send(markup);
+    var AppElement = React.createElement(App, {
+        flux: flux,
+        path: path
+            // initialState: initialState
     });
+
+    var markup = React.renderToString(AppElement);
+    // var markup = "";
+    // markup += '<script id="initial-state" type="application/json">' + JSON.stringify(initialState) + '</script>';
+    // markup += '<script type="text/javascript" src="/public/dist/bundle.js"></script>';
+    res.send(markup);
 
 });
 

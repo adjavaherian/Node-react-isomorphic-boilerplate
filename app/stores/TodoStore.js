@@ -21,12 +21,16 @@ module.exports = TodoStore = Fluxxor.createStore({
             constants.CLEAR_TODOS, this.onClearTodos
         );
     },
+    // when the ADD_TODO action is called, the dispatcher notifies this store
+    // and this store runs this function
     onAddTodo: function(payload) {
+        // save data to server here
         this.todos.push({
             text: payload.text,
             complete: false
         });
-        this.emit('change');
+        this.emit('change'); // this is like the `return false` for the dispatcher; when it gets this trigger, the dispatcher resolves its promise.
+        // any components listening to changes to this store will grab the state from the store and re-render
     },
     onToggleTodo: function(payload) {
         payload.todo.complete = !payload.todo.complete;
