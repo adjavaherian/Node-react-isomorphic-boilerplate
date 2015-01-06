@@ -8,20 +8,20 @@ var url = require('url');
 var request = require('request');
 
 app.use(express.static(path.join(__dirname, '/')));
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
     extended: true
 }));
-
+//
+//
+//
 var App = require('./app/App.js');
 var Fluxxor = require('fluxxor');
 var constants = require('./app/constants');
 var actions = require('./app/actions');
 var TodoStore = require('./app/stores/TodoStore');
 var CommentStore = require('./app/stores/CommentStore');
-
-
 
 app.route('/*').get(function(req, res, next) {
     // all requests will be routed through react app; both server and client side stuffs
@@ -87,7 +87,6 @@ app.route('/*').get(function(req, res, next) {
     res.send(markup);
 
 });
-
 
 app.listen(config.app.port);
 console.log('Server listening on port ' + config.app.port);

@@ -27,11 +27,13 @@ var constants = require('./constants');
 var TodoStore = require('./stores/TodoStore');
 var CommentStore = require('./stores/CommentStore');
 var actions = require('./actions');
-
+//
+//test
 if (typeof window !== 'undefined') {
     // trigger render to bind UI to application on front end
     window.onload = function() {
-        console.log('CLIENT-ONLY CODE; re-render on load to initialize UI elements and all')
+        console.log('CLIENT-ONLY CODE; re-render on load to initialize UI elements and all');
+
         var path = url.parse(document.URL).pathname;
         console.log('CLIENT path: ' + path) // ONLY COMPONENTS ON THIS PAGE SHOULD RECEIVE INITIAL STATE DATA
             // var initialState = JSON.parse(document.getElementById('initial-state').innerHTML);
@@ -58,10 +60,7 @@ if (typeof window !== 'undefined') {
         }), document);
     };
 }
-
-
-
-
+//
 var App = React.createClass({
     displayName: 'App',
     mixins: [FluxMixin, StoreWatchMixin('TodoStore')],
@@ -109,7 +108,7 @@ var App = React.createClass({
                     // Locations component handles like a switch case, 
                     // if the current path matches the path of a child, it renders that element. simple. 
                     React.createElement(Locations, {
-                            path: this.props.path,
+                            path: this.props.path
                         },
                         React.createElement(Location, {
                             path: "/",
