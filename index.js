@@ -82,7 +82,7 @@ app.route('/*').get(function(req, res, next) {
 
     var markup = React.renderToString(AppElement);
     // var markup = "";
-    // markup += '<script id="initial-state" type="application/json">' + JSON.stringify(initialState) + '</script>';
+    // markup += '<script id="initial-state" type="application/json">' + JSON.stringify(flux) + '</script>';
     // markup += '<script type="text/javascript" src="/public/dist/bundle.js"></script>';
     res.send(markup);
 

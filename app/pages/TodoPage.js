@@ -49,6 +49,7 @@ module.exports = TodoPage = React.createClass({
                                         // onClick: function() {
                                         //      console.log('toggled from ' + JSON.stringify(todo) + ' to ' + !todo.complete)
                                         //      todo.complete = !todo.complete;
+                                        //      todo.addClass('completed');
                                         // }
 
 
