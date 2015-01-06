@@ -634,7 +634,6 @@ module.exports = TodoPage = React.createClass({
 
                                         // instead, call the dispatcher:
                                         // since we are in a state.todos.map, this.getFlux() is not available. this refers to something else!
-                                        // onClick: this.getFlux().actions.toggleTodo(todo).bind(this, todo);
                                         onClick: function(todo) {
                                             this.getFlux().actions.toggleTodo(todo);
                                         }.bind(this, todo)
@@ -642,7 +641,7 @@ module.exports = TodoPage = React.createClass({
                                     }, todo.text + ' | ' + todo.complete)
                                 )
                             );
-                        }, this) //end this.state.todos.map
+                        }.bind(this)) //end this.state.todos.map
                 ),
                 React.DOM.form({
                         // onSubmit: this.onSubmitForm
@@ -751,7 +750,7 @@ module.exports = TodoStore = Fluxxor.createStore({
             'complete': false
         }, {
             'text': 'asdfasdf',
-            'complete': false
+            'complete': true
         }, {
             'text': '333',
             'complete': false
@@ -775,8 +774,10 @@ module.exports = TodoStore = Fluxxor.createStore({
         // any components listening to changes to this store will grab the state from the store and re-render
     },
     onToggleTodo: function(payload) {
-        payload.todo.complete = !payload.todo.complete;
+        payload.todo.complete = !payload.todo.complete; // payload.todo is passed by reference! so it updates this.todos as well
+        console.log(JSON.stringify(this.todos)); // already updated!
         this.emit('change');
+        console.log(JSON.stringify(this.todos)); // already updated!
     },
     onClearTodos: function() {
         this.todos = this.todos.filter(function(todo) {

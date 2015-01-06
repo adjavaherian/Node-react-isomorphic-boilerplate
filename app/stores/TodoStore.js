@@ -9,7 +9,7 @@ module.exports = TodoStore = Fluxxor.createStore({
             'complete': false
         }, {
             'text': 'asdfasdf',
-            'complete': false
+            'complete': true
         }, {
             'text': '333',
             'complete': false
@@ -33,8 +33,10 @@ module.exports = TodoStore = Fluxxor.createStore({
         // any components listening to changes to this store will grab the state from the store and re-render
     },
     onToggleTodo: function(payload) {
-        payload.todo.complete = !payload.todo.complete;
+        payload.todo.complete = !payload.todo.complete; // payload.todo is passed by reference! so it updates this.todos as well
+        console.log(JSON.stringify(this.todos)); // already updated!
         this.emit('change');
+        console.log(JSON.stringify(this.todos)); // already updated!
     },
     onClearTodos: function() {
         this.todos = this.todos.filter(function(todo) {

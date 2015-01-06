@@ -54,7 +54,6 @@ module.exports = TodoPage = React.createClass({
 
                                         // instead, call the dispatcher:
                                         // since we are in a state.todos.map, this.getFlux() is not available. this refers to something else!
-                                        // onClick: this.getFlux().actions.toggleTodo(todo).bind(this, todo);
                                         onClick: function(todo) {
                                             this.getFlux().actions.toggleTodo(todo);
                                         }.bind(this, todo)
@@ -62,7 +61,7 @@ module.exports = TodoPage = React.createClass({
                                     }, todo.text + ' | ' + todo.complete)
                                 )
                             );
-                        }, this) //end this.state.todos.map
+                        }.bind(this)) //end this.state.todos.map
                 ),
                 React.DOM.form({
                         // onSubmit: this.onSubmitForm
