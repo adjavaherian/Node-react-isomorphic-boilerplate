@@ -1,6 +1,5 @@
 var React = require('react');
 
-
 module.exports = FrontPage = React.createClass({
     displayName: 'FrontPage',
     render: function() {

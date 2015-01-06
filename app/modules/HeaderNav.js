@@ -16,6 +16,10 @@ module.exports = HeaderNav = React.createClass({
                 }, 'Frontpage!'),
                 React.createElement(Link, {
                     className: "btn btn-default",
+                    href: "/todo"
+                }, '...TODO APP...!'),
+                React.createElement(Link, {
+                    className: "btn btn-default",
                     href: "/1"
                 }, 'Go to page 1'),
                 React.createElement(Link, {

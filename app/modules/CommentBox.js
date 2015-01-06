@@ -18,7 +18,7 @@ module.exports = CommentBox = React.createClass({
     displayName: 'CommentBox',
     loadCommentsFromServer: function() {
         var self = this;
-        request('https://hotpads-iso-react.herokuapp.com/' + this.props.url, function(error, response, body) {
+        request('http://localhost:3000/' + this.props.url, function(error, response, body) {
             if (!error && response.statusCode == 200) {
                 self.setState({ // calling this.setState() will cause react to re-render the component
                     data: JSON.parse(body)
@@ -61,7 +61,7 @@ module.exports = CommentBox = React.createClass({
     },
     componentDidMount: function() { // called automatically when the component is mounted
         this.loadCommentsFromServer(); // client side stuff; we do getInitialState on the server!
-        setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+        // setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
     render: function() {
         return React.DOM.div({
